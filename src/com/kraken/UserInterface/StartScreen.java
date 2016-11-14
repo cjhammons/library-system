@@ -1,4 +1,4 @@
-package com.kraken.UserInterface;
+package com.kraken.UserInterface.UserInterface;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
