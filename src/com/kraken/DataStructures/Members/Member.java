@@ -4,20 +4,22 @@ package com.kraken.DataStructures.Members;
  * Created by Curtis on 11/14/2016.
  */
 public class Member {
-    //TODO
-    //Couldn't we just give it a bool isLibrarian?
-    // There is really no difference in the actual classes
 
     int memberId;
     String name;
     double fines;
     boolean canCheckOut;
+    boolean isLibrarian;
 
     /**
      * Default Constructor
      */
     public Member() {
 
+    }
+
+    public boolean isLibrarian() {
+        return isLibrarian;
     }
 
     public int getMemberId() {
@@ -50,5 +52,9 @@ public class Member {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLibrarian(boolean librarian) {
+        isLibrarian = librarian;
     }
 }

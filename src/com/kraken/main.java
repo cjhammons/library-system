@@ -1,8 +1,10 @@
 package com.kraken;
 
+import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.StartScreen;
 
 import javax.swing.*;
+import java.sql.SQLException;
 
 /**
  * Created by Curtis on 11/15/2016.
@@ -11,6 +13,15 @@ import javax.swing.*;
  */
 public class main {
     public static void main(String[] args) {
+
+        DatabaseManager databaseManager = null;
+        try {
+            databaseManager = new DatabaseManager();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        boolean created = databaseManager.initialize();
+
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
