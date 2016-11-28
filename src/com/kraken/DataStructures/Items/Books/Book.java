@@ -11,6 +11,12 @@ public abstract class Book extends Item {
     String author;
     int ISBN;
 
+    /**
+     * Default Constructor, creates empty item object.
+     */
+    public Book() {
+    }
+
     public String getAuthor() {
         return author;
     }

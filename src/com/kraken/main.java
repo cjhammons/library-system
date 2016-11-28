@@ -1,5 +1,8 @@
 package com.kraken;
 
+import com.kraken.DataStructures.Items.Books.Enumerations.Status;
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
+import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.StartScreen;
 
@@ -20,7 +23,18 @@ public class main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        boolean created = databaseManager.initialize();
+        boolean created = databaseManager.initializeTables();
+        //create test item
+        HardCopy book = new HardCopy();
+        book.setCost(13232);
+        book.setGenre("Fiction");
+        book.setTitle("Of Mice and Men");
+        book.setStatus(Status.InLibrary);
+        book.setType(Type.HardCopy);
+        book.setAuthor("John Steinbeck");
+        book.setISBN(38278504);
+        book.setLocationInLibrary("over there");
+        boolean added = databaseManager.addItem(book);
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
@@ -29,4 +43,5 @@ public class main {
         frame.pack();
         frame.setVisible(true);
     }
+
 }

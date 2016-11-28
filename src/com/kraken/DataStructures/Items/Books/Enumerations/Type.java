@@ -12,5 +12,5 @@ public enum Type {
     DiscItem,
     AudioBook,
     CD,
-    DVD
+    DVD;
 }

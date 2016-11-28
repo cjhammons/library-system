@@ -1,11 +1,13 @@
 package com.kraken.DataStructures.Items.DiscItems;
 
+import com.kraken.DataStructures.Items.Item;
+
 /**
  * Created by Curtis on 11/14/2016.
  *
  * Abstract representation of a DiscItem. All items that are discs must extend this.
  */
-public abstract class DiscItem {
+public abstract class DiscItem extends Item{
     int numDiscs;
     double runtime; //in minutes?
 

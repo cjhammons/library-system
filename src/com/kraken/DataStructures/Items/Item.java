@@ -80,4 +80,8 @@ public abstract class Item {
     public void setType(Type type) {
         this.type = type;
     }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }
