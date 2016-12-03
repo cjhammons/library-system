@@ -149,7 +149,11 @@ public class DatabaseManager {
     public boolean updateItem(Item item) {return true;}
 
     public void printItemTable() {
-
+        try {
+            Connection c = getDatConnection();
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     /*

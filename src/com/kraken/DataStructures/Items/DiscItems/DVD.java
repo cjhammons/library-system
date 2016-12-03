@@ -15,6 +15,13 @@ public class DVD extends DiscItem{
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nDirector: " + director
+                + "\nMainActor: " + mainActor;
+    }
+
     public String getDirector() {
         return director;
     }

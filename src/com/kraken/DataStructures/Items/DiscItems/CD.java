@@ -14,6 +14,12 @@ public class CD extends DiscItem {
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nArtist: " + artist;
+    }
+
     public String getArtist() {
         return artist;
     }

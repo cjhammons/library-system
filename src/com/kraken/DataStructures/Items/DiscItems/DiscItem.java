@@ -18,6 +18,12 @@ public abstract class DiscItem extends Item{
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nNumDiscs: " + numDiscs
+                + "\nRuntime: " + runtime;
+    }
     public double getRuntime() {
         return runtime;
     }

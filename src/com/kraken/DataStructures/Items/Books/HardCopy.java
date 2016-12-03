@@ -13,6 +13,12 @@ public class HardCopy extends Book {
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nLocation: " + locationInLibrary;
+    }
+
     public String getLocationInLibrary() {
         return locationInLibrary;
     }

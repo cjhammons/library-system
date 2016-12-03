@@ -16,6 +16,13 @@ public class AudioBook extends DiscItem{
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nAuthor: " + author
+                + "\nISBN: " + ISBN;
+    }
+
     public String getAuthor() {
         return author;
     }

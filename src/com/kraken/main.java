@@ -20,7 +20,7 @@ public class main {
         DatabaseManager databaseManager = null;
         try {
             databaseManager = new DatabaseManager();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         boolean created = databaseManager.initializeTables();

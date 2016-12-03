@@ -13,6 +13,12 @@ public class EBook extends Book {
         super();
     }
 
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\naccessPoint: " + accessPoint;
+    }
+
     public String getAccessPoint() {
         return accessPoint;
     }

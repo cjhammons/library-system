@@ -37,6 +37,16 @@ public abstract class Item {
     //Class diagram calls for deleteItem and createNewItem, I believe those are redundant since
     //the database manager handles that. I left them out for now.
 
+    public String toString() {
+        return    "Title: " + title
+                + "\nID: "+ itemID
+                + "\nGenre: " + genre
+                + "\nCost: " + cost
+                + "\nStatus: " + status
+                + "\nType: " + type;
+
+    }
+
     public int getCost() {
         return cost;
     }
