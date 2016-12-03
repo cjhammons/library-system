@@ -138,23 +138,73 @@ public class DatabaseManager {
     }
 
     public boolean checkOut(Item item) {
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+
+            String sql = "UPDATE " + ITEM_TABLE + " set "
+                    + "status = " + Status.CheckedOut.toString() + " "
+                    + "where ID = " + item.getItemID() + ";";
+        } catch (Exception e) {
+            System.out.println("Item Checkout failed: " + e.getMessage());
+            return false;
+        }
         return true;
     }
 
     public boolean checkIn(Item item) {
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+
+            String sql = "UPDATE " + ITEM_TABLE + " set "
+                    + "status = " + Status.InLibrary.toString() + " "
+                    + "where ID = " + item.getItemID() + ";";
+        } catch (Exception e) {
+            System.out.println("Item Checkin failed: " + e.getMessage());
+            return false;
+        }
         return true;
     }
 
     public boolean renewItem(Item item) {
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+
+            String sql = "UPDATE " + ITEM_TABLE + " set "
+                    + "status = " + Status.CheckedOut.toString() + " "
+                    + "where ID = " + item.getItemID() + ";";
+        } catch (Exception e) {
+            System.out.println("Item renew failed: " + e.getMessage());
+            return false;
+        }
         return true;
     }
 
     public boolean payFine(Item item){
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+
+            String sql = "UPDATE " + ITEM_TABLE + " set "
+                    + "cost = 0"
+                    + "where ID = " + item.getItemID() + ";";
+        } catch (Exception e) {
+            System.out.println("Item Checkout failed: " + e.getMessage());
+            return false;
+        }
         return true;
     }
 
-    public boolean updateItem(Item item) {return true;}
+//    boolean updateItem(Item item) {
+//
+//    }
 
+    /**
+     * Queries the database for All the items and returns them in a neat little list.
+     * @return List of all items.
+     */
     public List<Item> getAllItems() {
         List<Item> list = new ArrayList<>();
         try {
@@ -221,6 +271,10 @@ public class DatabaseManager {
         return list;
     }
 
+    /**
+     * Prints all the basic info of the items in the table to the console.
+     * For debugging and testing purposes only.
+     */
     public void printItemTable() {
         try {
             Connection c = getDatConnection();
