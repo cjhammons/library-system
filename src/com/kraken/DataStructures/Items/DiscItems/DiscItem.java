@@ -9,7 +9,7 @@ import com.kraken.DataStructures.Items.Item;
  */
 public abstract class DiscItem extends Item{
     int numDiscs;
-    double runtime; //in minutes?
+    String runtime; //in minutes?
 
     /**
      * Default constructor
@@ -24,7 +24,7 @@ public abstract class DiscItem extends Item{
                 + "\nNumDiscs: " + numDiscs
                 + "\nRuntime: " + runtime;
     }
-    public double getRuntime() {
+    public String getRuntime() {
         return runtime;
     }
 
@@ -36,7 +36,7 @@ public abstract class DiscItem extends Item{
         this.numDiscs = numDiscs;
     }
 
-    public void setRuntime(double runtime) {
+    public void setRuntime(String runtime) {
         this.runtime = runtime;
     }
 }

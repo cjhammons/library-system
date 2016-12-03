@@ -3,10 +3,13 @@ package com.kraken;
 import com.kraken.DataStructures.Items.Books.Enumerations.Status;
 import com.kraken.DataStructures.Items.Books.Enumerations.Type;
 import com.kraken.DataStructures.Items.Books.HardCopy;
+import com.kraken.DataStructures.Items.Item;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.StartScreen;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
+import java.util.List;
 
 /**
  * Created by Curtis on 11/15/2016.
@@ -27,8 +30,10 @@ public class main {
             System.out.println("Database didn't initialize! :( :( :( :( :( :(");
         }
         //create test item
-        testAddPlsIgnore(databaseManager);
-        testDeletePlsIgnore(databaseManager);
+//        testAddPlsIgnore(databaseManager);
+//        testDeletePlsIgnore(databaseManager);
+        getAllTest(databaseManager);
+
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,7 +41,10 @@ public class main {
         frame.pack();
         frame.setVisible(true);
     }
-    
+
+    static void getAllTest(DatabaseManager databaseManager) {
+        List<Item> list = databaseManager.getAllItems();
+    }
     
     static void testAddPlsIgnore(DatabaseManager databaseManager) {
         HardCopy book = new HardCopy();

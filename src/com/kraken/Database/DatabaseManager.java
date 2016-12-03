@@ -2,6 +2,8 @@ package com.kraken.Database;
 
 import com.kraken.DataStructures.Items.Books.Book;
 import com.kraken.DataStructures.Items.Books.EBook;
+import com.kraken.DataStructures.Items.Books.Enumerations.Status;
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
 import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.DataStructures.Items.DiscItems.AudioBook;
 import com.kraken.DataStructures.Items.DiscItems.CD;
@@ -11,6 +13,8 @@ import com.kraken.DataStructures.Items.Item;
 
 import java.lang.reflect.Member;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Curtis on 11/16/2016.
@@ -151,6 +155,72 @@ public class DatabaseManager {
 
     public boolean updateItem(Item item) {return true;}
 
+    public List<Item> getAllItems() {
+        List<Item> list = new ArrayList<>();
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + ITEM_TABLE + ";");
+
+            while (resultSet.next()) {
+                Item item;
+                /* Rock me mama like a wagon wheel */
+                Type type = Type.valueOf(resultSet.getString("type_"));
+
+                //Type specific field
+                switch (type) {
+                    case HardCopy:
+                        item = new HardCopy();
+                        ((HardCopy) item).setAuthor(resultSet.getString("author"));
+                        ((HardCopy) item).setISBN(resultSet.getInt("isbn"));
+                        ((HardCopy) item).setLocationInLibrary(resultSet.getString("location"));
+                        break;
+                    case eBook:
+                        item = new EBook();
+                        ((EBook) item).setAuthor(resultSet.getString("author"));
+                        ((EBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((EBook) item).setAccessPoint(resultSet.getString("accessPnt"));
+                        break;
+                    case AudioBook:
+                        item = new AudioBook();
+                        ((AudioBook) item).setAuthor(resultSet.getString("author"));
+                        ((AudioBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((AudioBook) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((AudioBook) item).setRuntime(resultSet.getString("runTime"));
+                        break;
+                    case CD:
+                        item = new CD();
+                        ((CD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((CD) item).setRuntime(resultSet.getString("runTime"));
+                        ((CD) item).setArtist(resultSet.getString("artist"));
+                        break;
+                    case DVD:
+                    default:
+                        item = new DVD();
+                        ((DVD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((DVD) item).setRuntime(resultSet.getString("runTime"));
+                        ((DVD) item).setDirector(resultSet.getString("director"));
+                        ((DVD) item).setMainActor(resultSet.getString("mainActor"));
+                        break;
+                }
+                //Generic fields
+                item.setItemID(resultSet.getInt("ID"));
+                item.setCost(resultSet.getInt("cost"));
+                item.setGenre(resultSet.getString("genre"));
+                item.setTitle(resultSet.getString("title"));
+                item.setStatus(Status.valueOf(resultSet.getString("status")));
+                item.setType(type); //from earlier
+                list.add(item);
+            }
+            statement.close();
+            c.commit();
+            c.close();
+        } catch (Exception e){
+            e.getMessage();
+        }
+        return list;
+    }
+
     public void printItemTable() {
         try {
             Connection c = getDatConnection();
@@ -194,11 +264,9 @@ public class DatabaseManager {
                             + "author       TEXT, "     //books & audiobooks only
                             + "isbn         INTEGER, "  //books & audiobooks only
                             + "accessPnt    TEXT, "     //ebooks only
-                            + "location     TEXT, "     //hardcopys only
+                            + "location     TEXT, "     //hardcopies only
                             + "numDiscs     INTEGER, "  //DiscItems only
                             + "runTime      TEXT, "     //DiscItems only
-                            + "author       TEXT,"      //Audiobook Only
-                            + "isbn         INTEGER,"   //Audiobook Only
                             + "artist       TEXT, "     //CD only
                             + "director     TEXT, "     //DVD only
                             + "mainActor    TEXT"       //DVD only
