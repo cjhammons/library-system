@@ -71,7 +71,7 @@ public class DatabaseManager {
             Statement stmt = connection.createStatement();
             //Create a field an values string and put them together later.
             String fields = "(cost,genre,title,status,type_,";
-            String values = "VALUES (" + item.getCost() + ",'" + item.getGenre() + "'," + item.getTitle() + "','" + item.getStatus() + "','" + item.getType() +"'";
+            String values = "VALUES (" + item.getCost() + ",'" + item.getGenre() + "','" + item.getTitle() + "','" + item.getStatus() + "','" + item.getType() +"'";
             //Adjust fields and values depending on what kind of item this is.
             if (item instanceof Book) {
                 fields += "author,isbn,";
@@ -81,8 +81,9 @@ public class DatabaseManager {
                     values += ",'" + ((EBook) item).getAccessPoint() + "'";
                 } else if (item instanceof HardCopy) {
                     fields += "location";
-                    values += "," + ((HardCopy) item).getLocationInLibrary();
+                    values += ",'" + ((HardCopy) item).getLocationInLibrary()+"'";
                 }
+                /* wake me up inside */
             } if (item instanceof DiscItem) {
                 fields += "numDiscs,runTime,";
                 values += "," +((DiscItem) item).getNumDiscs() + ",'" + ((DiscItem) item).getRuntime() + "'";
@@ -103,6 +104,7 @@ public class DatabaseManager {
             stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
+            connection.setAutoCommit(true);
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -127,6 +129,7 @@ public class DatabaseManager {
             printItemTable();
             return false;
         }
+
         return true;
     }
 
@@ -151,6 +154,20 @@ public class DatabaseManager {
     public void printItemTable() {
         try {
             Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + ITEM_TABLE + ";");
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("ID");
+                String title = resultSet.getString("title");
+
+                System.out.println("ID: " + id);
+                System.out.println("Title: " + title);
+                System.out.println();
+            }
+            statement.close();
+            c.commit();
+            c.close();
         } catch (Exception e) {
             e.getMessage();
         }
@@ -221,10 +238,14 @@ public class DatabaseManager {
     }
 
 
+    /*I've become so numb*/
+
     Connection getDatConnection() throws Exception {
         try {
             Class.forName("org.sqlite.JDBC");
-            return DriverManager.getConnection(DATABASE_NAME);
+            Connection connection = DriverManager.getConnection(DATABASE_NAME);
+            connection.setAutoCommit(false);
+            return connection;
         } catch (Exception e) {
             System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
             throw e;
