@@ -17,18 +17,12 @@ import java.sql.*;
  */
 public class DatabaseManager {
 
-//    Connection connection;
     static final String ITEM_TABLE = "itemTable";
     static final String MEMBER_TABLE = "memberTableName";
     static final String DATABASE_NAME = "jdbc:sqlite:library.db";
 
-    public DatabaseManager() throws SQLException {
-//        try {
-//            connection = DriverManager.getConnection(DATABASE_NAME);
-//        } catch (SQLException e) {
-//            System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
-//            throw e;
-//        }
+    public DatabaseManager()  {
+        initializeTables();
     }
 
     /**
@@ -37,7 +31,7 @@ public class DatabaseManager {
      */
     public boolean initializeTables(){
         try {
-            Class.forName("org.sqlite.JDBC");
+//            Class.forName("org.sqlite.JDBC");
             createItemTable();
             createMemberTable();
         } catch (Exception e) {
@@ -110,7 +104,7 @@ public class DatabaseManager {
             stmt.close();
             connection.commit();
             connection.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Item add failed.");
             return false;
@@ -127,7 +121,7 @@ public class DatabaseManager {
             stmt.close();
             connection.commit();
             connection.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Delete Item failed.");
             printItemTable();
@@ -187,7 +181,7 @@ public class DatabaseManager {
                             + "artist       TEXT, "     //CD only
                             + "director     TEXT, "     //DVD only
                             + "mainActor    TEXT"       //DVD only
-                            + ")"
+                            + ");"
             );
             stmt.close();
             connection.commit();
@@ -210,7 +204,7 @@ public class DatabaseManager {
                              + "fines                DOUBLE PRECISION, "
                              + "canCheckout          BOOLEAN, "
                              + "isLibrarian          BOOLEAN"
-                             + ")"
+                             + ");"
             );
             stmt.close();
             connection.commit();
@@ -223,10 +217,11 @@ public class DatabaseManager {
     }
 
 
-    Connection getDatConnection() throws SQLException {
+    Connection getDatConnection() throws Exception {
         try {
+            Class.forName("org.sqlite.JDBC");
             return DriverManager.getConnection(DATABASE_NAME);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
             throw e;
         }
