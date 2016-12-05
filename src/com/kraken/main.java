@@ -36,8 +36,11 @@ public class main {
 //        testAddPlsIgnore(databaseManager);
 //        testDeletePlsIgnore(databaseManager);
 //        getAllTest(databaseManager);
-        testAddMember(databaseManager);
-
+//        testAddMember(databaseManager);
+//        testUpdateMember(databaseManager);
+//        testCheckout(databaseManager);
+        testUpdateMember(databaseManager);
+        databaseManager.printMemberTable();
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
@@ -52,6 +55,17 @@ public class main {
     *           make sure all these get deleted before submit. //TODO
     *  --------------------------------------------------------------
     */
+
+    static void testCheckout(DatabaseManager databaseManager) {
+        List<Item> list = databaseManager.getAllItems();
+        Item item = list.get(0);
+        if (item.getStatus() == Status.CheckedOut) {
+            databaseManager.checkIn(item);
+        } else {
+            databaseManager.checkOut(item);
+        }
+
+    }
     static void testAddMember(DatabaseManager databaseManager) {
         Member member = new Member();
         member.setName("Billy Bob Bobkins");
@@ -61,8 +75,17 @@ public class main {
         databaseManager.addMember(member);
         databaseManager.printMemberTable();
     }
+
+    static void testUpdateMember(DatabaseManager databaseManager) {
+        List<Member> list = databaseManager.getAllMembers();
+        if (list.size()<1) { return; }
+        Member member = list.get(0);
+        member.setName("THIS NAME HAS BEEN CHANGED");
+        boolean updated = databaseManager.updateMember(member);
+    }
     static void getAllTest(DatabaseManager databaseManager) {
         List<Item> list = databaseManager.getAllItems();
+
     }
     
     static void testAddPlsIgnore(DatabaseManager databaseManager) {

@@ -92,7 +92,75 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean updateMemter(Member member) { return true; }
+    public boolean updateMember(Member member) {
+        boolean updated = false;
+        try {
+            Connection connection = getDatConnection();
+            Statement stmt = connection.createStatement();
+            int checkoutInt = (member.canCheckOut())? 1 : 0;
+            int librarianInt = (member.canCheckOut())? 1 : 0;
+
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + MEMBER_TABLE + " SET "
+                            + MEMBER_NAME + " = ? ,"
+                            + MEMBER_FINES + " = ? ,"
+                            + MEMBER_CANCHECKOUT + " = ? ,"
+                            + MEMBER_ISLIBRARIAN + " = ? "
+                            + "WHERE ID = ?");
+            preparedStatement.setString(1, member.getName());
+            preparedStatement.setDouble(2, member.getFines());
+            preparedStatement.setInt(3, checkoutInt);
+            preparedStatement.setInt(4, librarianInt);
+            preparedStatement.setInt(5, member.getMemberId());
+            updated = preparedStatement.execute();
+//            String sql = "UPDATE " + MEMBER_TABLE + " SET "
+//                        + MEMBER_NAME + " = '" + member.getName() + "', "
+//                        + MEMBER_FINES+ " = " + member.getFines() + ", "
+//                        + MEMBER_CANCHECKOUT + " = " + checkoutInt + ", "
+//                        + MEMBER_ISLIBRARIAN + " = " + librarianInt + " "
+//                        + "where ID=" + member.getMemberId();
+//            stmt.executeUpdate(sql);
+            if (updated) {
+                System.out.println("Update to " + member.getMemberId() + " successful");
+            } else {
+                System.out.println("Update to " + member.getMemberId() + " unsuccessful");
+
+            }
+            stmt.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Member update failed : " + e.getMessage());
+        }
+        return updated;
+    }
+
+    public List<Member> getAllMembers() {
+        List<Member> list = new ArrayList<>();
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
+
+            while(resultSet.next()) {
+                Member member = new Member();
+
+                member.setName(resultSet.getString(MEMBER_NAME));
+                member.setFines(resultSet.getDouble(MEMBER_FINES));
+                member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
+
+                list.add(member);
+            }
+            statement.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
+        } catch (Exception e) {
+            System.out.println("getAllMembers failed: " + e.getMessage());
+        }
+        return list;
+    }
 
     public void printMemberTable() {
         try {
@@ -107,12 +175,13 @@ public class DatabaseManager {
 
                 System.out.println("ID: " + id);
                 System.out.println("Name: " + title);
-                System.out.println("Librarian: " + resultSet.getBoolean("isLibrarian"));
-                System.out.println("Can checkout: " + resultSet.getBoolean("canCheckout"));
+                System.out.println("Librarian: " + resultSet.getBoolean(MEMBER_ISLIBRARIAN));
+                System.out.println("Can checkout: " + resultSet.getBoolean(MEMBER_CANCHECKOUT));
                 System.out.println();
             }
             statement.close();
             c.commit();
+            c.setAutoCommit(true);
             c.close();
         } catch (Exception e) {
             e.getMessage();
@@ -197,9 +266,17 @@ public class DatabaseManager {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
-            String sql = "UPDATE " + ITEM_TABLE + " set "
-                    + "status = " + Status.CheckedOut.toString() + " "
+            String sql = "UPDATE " + ITEM_TABLE + " SET "
+                    + "status = '" + Status.CheckedOut.toString() + "' "
                     + "where ID = " + item.getItemID() + ";";
+            statement.executeUpdate(sql);
+            statement.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
+            System.out.println("Checked out " + item.getTitle());
+
+
         } catch (Exception e) {
             System.out.println("Item Checkout failed: " + e.getMessage());
             return false;
@@ -212,9 +289,16 @@ public class DatabaseManager {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
-            String sql = "UPDATE " + ITEM_TABLE + " set "
-                    + "status = " + Status.InLibrary.toString() + " "
+            String sql = "UPDATE " + ITEM_TABLE + " SET "
+                    + "status = '" + Status.InLibrary.toString() + "' "
                     + "where ID = " + item.getItemID() + ";";
+            statement.executeUpdate(sql);
+            statement.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
+            System.out.println("Checked in " + item.getTitle());
+
         } catch (Exception e) {
             System.out.println("Item Checkin failed: " + e.getMessage());
             return false;
@@ -227,9 +311,15 @@ public class DatabaseManager {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
-            String sql = "UPDATE " + ITEM_TABLE + " set "
-                    + "status = " + Status.CheckedOut.toString() + " "
+            String sql = "UPDATE " + ITEM_TABLE + " SET "
+                    + "status = '" + Status.CheckedOut.toString() + "' "
                     + "where ID = " + item.getItemID() + ";";
+
+            statement.executeUpdate(sql);
+            statement.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
         } catch (Exception e) {
             System.out.println("Item renew failed: " + e.getMessage());
             return false;
@@ -242,9 +332,15 @@ public class DatabaseManager {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
-            String sql = "UPDATE " + ITEM_TABLE + " set "
+            String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "cost = 0"
                     + "where ID = " + item.getItemID() + ";";
+
+            statement.executeUpdate(sql);
+            statement.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
         } catch (Exception e) {
             System.out.println("Item Checkout failed: " + e.getMessage());
             return false;
@@ -266,7 +362,6 @@ public class DatabaseManager {
 
             while (resultSet.next()) {
                 Item item;
-                /* Rock me mama like a wagon wheel */
                 Type type = Type.valueOf(resultSet.getString("type_"));
 
                 //Type specific field
@@ -339,6 +434,7 @@ public class DatabaseManager {
 
                 System.out.println("ID: " + id);
                 System.out.println("Title: " + title);
+                System.out.println("status: " + resultSet.getString("status"));
                 System.out.println();
             }
             statement.close();
@@ -394,11 +490,11 @@ public class DatabaseManager {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + MEMBER_TABLE + " "
-                             + "(ID                  INTEGER PRIMARY KEY UNIQUE NOT NULL, "
-                             + "name                 TEXT, "
-                             + "fines                DOUBLE PRECISION, "
-                             + "canCheckout          INTEGER, "
-                             + "isLibrarian          INTEGER"
+                             + "(" + MEMBER_ID + "                  INTEGER PRIMARY KEY UNIQUE NOT NULL, "
+                             +  MEMBER_NAME  + "                 TEXT, "
+                             +  MEMBER_FINES + "                 DOUBLE PRECISION, "
+                             +  MEMBER_CANCHECKOUT + "           INTEGER, "
+                             +  MEMBER_ISLIBRARIAN + "           INTEGER"
                              + ");"
             );
             stmt.close();
@@ -422,4 +518,10 @@ public class DatabaseManager {
             throw e;
         }
     }
+
+    static final String MEMBER_ID = "ID";
+    static final String MEMBER_NAME = "name";
+    static final String MEMBER_FINES= "fines";
+    static final String MEMBER_CANCHECKOUT = "canCheckout";
+    static final String MEMBER_ISLIBRARIAN = "islibrarian";
 }
