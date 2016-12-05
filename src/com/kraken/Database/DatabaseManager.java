@@ -10,8 +10,8 @@ import com.kraken.DataStructures.Items.DiscItems.CD;
 import com.kraken.DataStructures.Items.DiscItems.DVD;
 import com.kraken.DataStructures.Items.DiscItems.DiscItem;
 import com.kraken.DataStructures.Items.Item;
+import com.kraken.DataStructures.Members.Member;
 
-import java.lang.reflect.Member;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +52,72 @@ public class DatabaseManager {
     */
 
     public boolean deleteMember(Member member) {
+        try {
+            Connection connection = getDatConnection();
+            Statement stmt = connection.createStatement();
+            String sql = "DELETE from " + MEMBER_TABLE + " where ID=" + member.getMemberId();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            connection.commit();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Delete Item failed.");
+            printItemTable();
+            return false;
+        }
+
         return true;
     }
 
     public boolean addMember(Member member) {
+        try {
+            Connection connection = getDatConnection();
+            Statement stmt = connection.createStatement();
+            int checkoutInt = (member.canCheckOut())? 1 : 0;
+            int librarianInt = (member.canCheckOut())? 1 : 0;
+            String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian) "
+                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt
+                        + " );";
+
+            stmt.executeUpdate(sql);
+            stmt.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Add member failed: " + e.getMessage());
+        }
+
         return true;
     }
 
     public boolean updateMemter(Member member) { return true; }
 
-    public void printMemberTable() {};
+    public void printMemberTable() {
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("ID");
+                String title = resultSet.getString("name");
+
+
+                System.out.println("ID: " + id);
+                System.out.println("Name: " + title);
+                System.out.println("Librarian: " + resultSet.getBoolean("isLibrarian"));
+                System.out.println("Can checkout: " + resultSet.getBoolean("canCheckout"));
+                System.out.println();
+            }
+            statement.close();
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    };
 
     /*
     * ----------------------------------------------------------------------------------------------------------
@@ -87,7 +143,6 @@ public class DatabaseManager {
                     fields += "location";
                     values += ",'" + ((HardCopy) item).getLocationInLibrary()+"'";
                 }
-                /* wake me up inside */
             } if (item instanceof DiscItem) {
                 fields += "numDiscs,runTime,";
                 values += "," +((DiscItem) item).getNumDiscs() + ",'" + ((DiscItem) item).getRuntime() + "'";
@@ -197,9 +252,6 @@ public class DatabaseManager {
         return true;
     }
 
-//    boolean updateItem(Item item) {
-//
-//    }
 
     /**
      * Queries the database for All the items and returns them in a neat little list.
@@ -345,8 +397,8 @@ public class DatabaseManager {
                              + "(ID                  INTEGER PRIMARY KEY UNIQUE NOT NULL, "
                              + "name                 TEXT, "
                              + "fines                DOUBLE PRECISION, "
-                             + "canCheckout          BOOLEAN, "
-                             + "isLibrarian          BOOLEAN"
+                             + "canCheckout          INTEGER, "
+                             + "isLibrarian          INTEGER"
                              + ");"
             );
             stmt.close();
@@ -358,9 +410,6 @@ public class DatabaseManager {
         }
         return true;
     }
-
-
-    /*I've become so numb*/
 
     Connection getDatConnection() throws Exception {
         try {

@@ -4,6 +4,7 @@ import com.kraken.DataStructures.Items.Books.Enumerations.Status;
 import com.kraken.DataStructures.Items.Books.Enumerations.Type;
 import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.DataStructures.Items.Item;
+import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.StartScreen;
 
@@ -27,12 +28,16 @@ public class main {
         }
         boolean created = databaseManager.initializeTables();
         if (!created) {
-            System.out.println("Database didn't initialize! :( :( :( :( :( :(");
+            System.out.println("Database didn't initialize");
         }
+        /* WHO NEEDS UNIT TESTS ANYWAY*/
+
         //create test item
 //        testAddPlsIgnore(databaseManager);
 //        testDeletePlsIgnore(databaseManager);
-        getAllTest(databaseManager);
+//        getAllTest(databaseManager);
+        testAddMember(databaseManager);
+
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
@@ -42,6 +47,20 @@ public class main {
         frame.setVisible(true);
     }
 
+
+    /* --------------------------------------------------------------
+    *           make sure all these get deleted before submit. //TODO
+    *  --------------------------------------------------------------
+    */
+    static void testAddMember(DatabaseManager databaseManager) {
+        Member member = new Member();
+        member.setName("Billy Bob Bobkins");
+        member.setFines(3.14);
+        member.setCanCheckOut(true);
+        member.setLibrarian(true);
+        databaseManager.addMember(member);
+        databaseManager.printMemberTable();
+    }
     static void getAllTest(DatabaseManager databaseManager) {
         List<Item> list = databaseManager.getAllItems();
     }
@@ -60,12 +79,11 @@ public class main {
         if (added) {
             databaseManager.printItemTable();
         } else {
-            System.out.println("Item didn't add for some godamn reason");
+            System.out.println("Item didn't add for some reason");
         }
     }
 
     static void testDeletePlsIgnore(DatabaseManager databaseManager) {
-        /* why? */
         HardCopy book = new HardCopy();
         book.setItemID(8);
         if (databaseManager.deleteItem(book)) {

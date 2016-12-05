@@ -34,7 +34,7 @@ public class Member {
         return name;
     }
 
-    public boolean CanCheckOut() {
+    public boolean canCheckOut() {
         return canCheckOut;
     }
 
