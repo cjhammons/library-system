@@ -1,5 +1,7 @@
 package com.kraken.DataStructures.Items.Books;
 
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
+
 /**
  * Created by Curtis on 11/14/2016.
  */
@@ -11,6 +13,7 @@ public class HardCopy extends Book {
      */
     public HardCopy() {
         super();
+        this.setType(Type.HardCopy);
     }
 
     @Override

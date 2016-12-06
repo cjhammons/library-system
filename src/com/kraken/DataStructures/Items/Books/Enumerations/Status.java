@@ -8,6 +8,7 @@ package com.kraken.DataStructures.Items.Books.Enumerations;
 public enum Status {
     InLibrary,
     CheckedOut,
+    Reserved,
     Late,
     Lost
 }

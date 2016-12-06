@@ -1,130 +1,244 @@
 package com.kraken.UserInterface;
 
-import com.kraken.DataStructures.Items.Books.Book;
 import com.kraken.DataStructures.Items.Books.EBook;
+import com.kraken.DataStructures.Items.Books.Enumerations.Status;
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
 import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.DataStructures.Items.DiscItems.AudioBook;
 import com.kraken.DataStructures.Items.DiscItems.CD;
 import com.kraken.DataStructures.Items.DiscItems.DVD;
 import com.kraken.DataStructures.Items.Item;
+import com.kraken.Database.DatabaseManager;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import static com.kraken.main.WINDOW_DIMENSION;
 
 /**
  * Created by Jessica on 12/5/16.
  */
 public class addItem {
-    private JTextField itemTitleTextField;
-    private JTextField itemIDTextField;
-    private JComboBox comboBox1;
-    private JTextField ADDHERETextField;
-    private JTextField accessPointTextField;
-    private JTextField locationInLibraryTextField;
-    private JTextField authorTextField;
-    private JTextField ISBNTextField;
-    private JTextField directorTextField;
-    private JTextField mainActorTextField;
-    private JTextField artistTextField;
+    private JTextField titleField;
+    private JTextField hardCopyTextField;
+    private JPanel add_item_panel;
+    private JTextField genreField;
+    private JTextField costField;
+    private JTextField authorField;
+    private JTextField isbnField;
+    private JTextField accessPointField;
+    private JTextField locationField;
+    private JTextField numDiscsField;
+    private JTextField runtimeField;
+    private JTextField artistField;
+    private JTextField directorField;
+    private JTextField mainActorField;
+    private JButton addButton;
+    private JButton backButton;
 
-
-    public void setVisibilities() {
-        accessPointTextField.setVisible(false);
-        locationInLibraryTextField.setVisible(false);
-        authorTextField.setVisible(false);
-        ISBNTextField.setVisible(false);
-        directorTextField.setVisible(false);
-        mainActorTextField.setVisible(false);
-        artistTextField.setVisible(false);
-    }
-    public Item createNewItem() {
-        comboBox1.insertItemAt("Hard Copy Book", 1);
-        comboBox1.insertItemAt("eBook", 2);
-        comboBox1.insertItemAt("Audio Book", 3);
-        comboBox1.insertItemAt("DVD", 4);
-        comboBox1.insertItemAt("CD", 5);
-
-        int index = comboBox1.getSelectedIndex();
-        Item newItem;
-        switch (index) {
-            case 1:
-                newItem = new HardCopy();
-                locationInLibraryTextField.setVisible(true);
+    Item mItem;
+    Type mType;
+    public addItem(Type type)
+    {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("start screen");
+                frame.setContentPane(new ItemTransaction().getMain_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+        titleField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                titleField.setText("");
+            }
+        });
+        genreField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                genreField.setText("");
+            }
+        });
+        costField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                costField.setText("");
+            }
+        });
+        authorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                authorField.setText("");
+            }
+        });
+        isbnField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                isbnField.setText("");
+            }
+        });
+        accessPointField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                accessPointField.setText("");
+            }
+        });
+        locationField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                locationField.setText("");
+            }
+        });
+        numDiscsField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                numDiscsField.setText("");
+            }
+        });
+        runtimeField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                runtimeField.setText("");
+            }
+        });
+        artistField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                artistField.setText("");
+            }
+        });
+        directorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                directorField.setText("");
+            }
+        });
+        mainActorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                mainActorField.setText("");
+            }
+        });
+        mType = type;
+        switch (mType){
+            case HardCopy:
+                accessPointField.setVisible(false);
+                numDiscsField.setVisible(false);
+                runtimeField.setVisible(false);
+                artistField.setVisible(false);
+                directorField.setVisible(false);
+                mainActorField.setVisible(false);
                 break;
-            case 2:
-                newItem = new EBook();
-                accessPointTextField.setVisible(true);
+            case eBook:
+                locationField.setVisible(false);
+                numDiscsField.setVisible(false);
+                runtimeField.setVisible(false);
+                artistField.setVisible(false);
+                directorField.setVisible(false);
+                mainActorField.setVisible(false);
                 break;
-            case 3:
-                newItem = new AudioBook();
-                authorTextField.setVisible(true);
-                ISBNTextField.setVisible(true);
-
-
+            case AudioBook:
+                accessPointField.setVisible(false);
+                locationField.setVisible(false);
+                numDiscsField.setVisible(false);
+                runtimeField.setVisible(false);
+                artistField.setVisible(false);
+                directorField.setVisible(false);
+                mainActorField.setVisible(false);
                 break;
-            case 4:
-                newItem = new DVD();
-                directorTextField.setVisible(true);
-                mainActorTextField.setVisible(true);
-
+            case DVD:
+                authorField.setVisible(false);
+                isbnField.setVisible(false);
+                accessPointField.setVisible(false);
+                locationField.setVisible(false);
+                artistField.setVisible(false);
                 break;
-            case 5:
-                newItem = new CD();
-                artistTextField.setVisible(true);
+            case CD:
+                authorField.setVisible(false);
+                isbnField.setVisible(false);
+                accessPointField.setVisible(false);
+                locationField.setVisible(false);
+                directorField.setVisible(false);
+                mainActorField.setVisible(false);
                 break;
-            default:
-                System.out.print("Invalid item type selected.");
-                return newItem;
         }
 
-        newItem.setTitle(itemTitleTextField.getText());
-        int id = itemIDTextField.getText(); //THIS NEEDS TO BE CONVERTED
-        newItem.setItemID();
-
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewItem();
+            }
+        });
+    }
+    public void setVisibilities() {
+        hardCopyTextField.setVisible(false);
 
     }
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
+    public Item createNewItem(){
+        switch (mType){
+            case HardCopy:
+                mItem = new HardCopy();
+                ((HardCopy)mItem).setAuthor(authorField.getText());
+                ((HardCopy)mItem).setISBN(Integer.parseInt(isbnField.getText()));
+                ((HardCopy)mItem).setLocationInLibrary(locationField.getText());
+                break;
+            case eBook:
+                mItem = new EBook();
+                ((EBook) mItem).setAuthor(authorField.getText());
+                ((EBook) mItem).setISBN(Integer.parseInt(isbnField.getText()));
+                ((EBook) mItem).setAccessPoint(accessPointField.getText());
+                break;
+            case AudioBook:
+                mItem = new AudioBook();
+                ((AudioBook)mItem).setAuthor(authorField.getText());
+                ((AudioBook)mItem).setISBN(Integer.parseInt(isbnField.getText()));
+                break;
+            case DVD:
+                mItem = new DVD();
+                ((DVD) mItem).setNumDiscs(Integer.parseInt(numDiscsField.getText()));
+                ((DVD) mItem).setRuntime(runtimeField.getText());
+                ((DVD) mItem).setDirector(directorField.getText());
+                ((DVD) mItem).setMainActor(mainActorField.getText());
+                break;
+            case CD:
+                mItem = new CD();
+                ((CD) mItem).setNumDiscs(Integer.parseInt(numDiscsField.getText()));
+                ((CD) mItem).setRuntime(runtimeField.getText());
+                break;
+        }
+        mItem.setCost(Integer.parseInt(costField.getText()));
+        mItem.setGenre(genreField.getText());
+        mItem.setTitle(titleField.getText());
+        mItem.setStatus(Status.InLibrary);
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.addItem(mItem);
+        databaseManager.printItemTable();
+
+        return mItem;
     }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 3, new Insets(0, 0, 0, 0), -1, -1));
-        final JLabel label1 = new JLabel();
-        label1.setText("Add Item: ");
-        panel1.add(label1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 2, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-        panel1.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 2, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final com.intellij.uiDesigner.core.Spacer spacer2 = new com.intellij.uiDesigner.core.Spacer();
-        panel1.add(spacer2, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 3, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        itemTitleTextField = new JTextField();
-        itemTitleTextField.setText("Item Title: ");
-        panel1.add(itemTitleTextField, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        comboBox1 = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
-        defaultComboBoxModel1.addElement("Hard Copy Book");
-        defaultComboBoxModel1.addElement("eBook");
-        defaultComboBoxModel1.addElement("Audio Book");
-        defaultComboBoxModel1.addElement("DVD");
-        defaultComboBoxModel1.addElement("CD");
-        comboBox1.setModel(defaultComboBoxModel1);
-        panel1.add(comboBox1, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        itemIDTextField = new JTextField();
-        itemIDTextField.setText("itemID: ");
-        panel1.add(itemIDTextField, new com.intellij.uiDesigner.core.GridConstraints(3, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        ADDHERETextField = new JTextField();
-        ADDHERETextField.setText("ADD HERE");
-        panel1.add(ADDHERETextField, new com.intellij.uiDesigner.core.GridConstraints(4, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    public JPanel getAdd_item_panel() {
+        return add_item_panel;
     }
 }

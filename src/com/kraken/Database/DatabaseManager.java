@@ -51,11 +51,11 @@ public class DatabaseManager {
     * ----------------------------------------------------------------------------------------------------------
     */
 
-    public boolean deleteMember(Member member) {
+    public boolean deleteMember(int memberId) {
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            String sql = "DELETE from " + MEMBER_TABLE + " where ID=" + member.getMemberId();
+            String sql = "DELETE from " + MEMBER_TABLE + " where ID=" + memberId;
             stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
@@ -70,17 +70,28 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean addMember(Member member) {
+    public int addMember(Member member) {
+        int retval = -1;
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
             int checkoutInt = (member.canCheckOut())? 1 : 0;
-            int librarianInt = (member.canCheckOut())? 1 : 0;
-            String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian) "
-                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt
+            int librarianInt = (member.isLibrarian())? 1 : 0;
+            String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian," + MEMBER_PASSWORD + ") "
+                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt + "," + member.getPassword()
                         + " );";
 
-            stmt.executeUpdate(sql);
+            String curval = "SELECT "+MEMBER_TABLE+".CURRVAL FROM dual";
+
+//            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//            PreparedStatement stmt = connection.prepareStatement(sql);
+            int row = stmt.executeUpdate(sql); //, Statement.RETURN_GENERATED_KEYS);
+
+            ResultSet resultSet = stmt.getGeneratedKeys();
+            resultSet.next();
+            retval = resultSet.getInt(1);
+
+
             stmt.close();
             connection.commit();
             connection.setAutoCommit(true);
@@ -89,7 +100,7 @@ public class DatabaseManager {
             System.out.println("Add member failed: " + e.getMessage());
         }
 
-        return true;
+        return retval;
     }
 
     public boolean updateMember(Member member) {
@@ -104,28 +115,24 @@ public class DatabaseManager {
                             + MEMBER_NAME + " = ? ,"
                             + MEMBER_FINES + " = ? ,"
                             + MEMBER_CANCHECKOUT + " = ? ,"
-                            + MEMBER_ISLIBRARIAN + " = ? "
+                            + MEMBER_ISLIBRARIAN + " = ? ,"
+                            + MEMBER_PASSWORD + " = ? "
                             + "WHERE ID = ?");
             preparedStatement.setString(1, member.getName());
             preparedStatement.setDouble(2, member.getFines());
             preparedStatement.setInt(3, checkoutInt);
             preparedStatement.setInt(4, librarianInt);
-            preparedStatement.setInt(5, member.getMemberId());
+            preparedStatement.setString(5, member.getPassword());
+            preparedStatement.setInt(6, member.getMemberId());
             updated = preparedStatement.execute();
-//            String sql = "UPDATE " + MEMBER_TABLE + " SET "
-//                        + MEMBER_NAME + " = '" + member.getName() + "', "
-//                        + MEMBER_FINES+ " = " + member.getFines() + ", "
-//                        + MEMBER_CANCHECKOUT + " = " + checkoutInt + ", "
-//                        + MEMBER_ISLIBRARIAN + " = " + librarianInt + " "
-//                        + "where ID=" + member.getMemberId();
-//            stmt.executeUpdate(sql);
+
             if (updated) {
                 System.out.println("Update to " + member.getMemberId() + " successful");
             } else {
                 System.out.println("Update to " + member.getMemberId() + " unsuccessful");
 
             }
-            stmt.close();
+            preparedStatement.close();
             connection.commit();
             connection.setAutoCommit(true);
             connection.close();
@@ -142,6 +149,7 @@ public class DatabaseManager {
             Statement statement = c.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
 
+
             while(resultSet.next()) {
                 Member member = new Member();
 
@@ -149,7 +157,8 @@ public class DatabaseManager {
                 member.setFines(resultSet.getDouble(MEMBER_FINES));
                 member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
                 member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
-
+                member.setMemberId(resultSet.getInt(MEMBER_ID));
+                member.setPassword(resultSet.getString(MEMBER_PASSWORD));
                 list.add(member);
             }
             statement.close();
@@ -168,6 +177,7 @@ public class DatabaseManager {
             Statement statement = c.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
 
+
             while (resultSet.next()) {
                 int id = resultSet.getInt("ID");
                 String title = resultSet.getString("name");
@@ -177,6 +187,7 @@ public class DatabaseManager {
                 System.out.println("Name: " + title);
                 System.out.println("Librarian: " + resultSet.getBoolean(MEMBER_ISLIBRARIAN));
                 System.out.println("Can checkout: " + resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                System.out.println("Password (pls dont hack me): " + resultSet.getString(MEMBER_PASSWORD));
                 System.out.println();
             }
             statement.close();
@@ -188,11 +199,62 @@ public class DatabaseManager {
         }
     };
 
+    public boolean checkMemberStatus(int memberId){
+
+        try {
+            Connection connection = getDatConnection();
+
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM " + MEMBER_TABLE + " WHERE ID = " + memberId + ";";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()){
+                boolean ret = resultSet.getBoolean(MEMBER_CANCHECKOUT);
+                return ret;
+            }
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e){
+            System.out.println("Member status check failed: " + e.getMessage());
+        }
+
+        return false;
+    }
+
     /*
     * ----------------------------------------------------------------------------------------------------------
     *                                               Item Methods
     * ----------------------------------------------------------------------------------------------------------
     */
+
+    public Status getItemStatus(int itemId) {
+        Status status = null;
+        try {
+            Connection connection = getDatConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE ID = " + itemId + ";";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()){
+                String statusString = resultSet.getString("status");
+                status = Status.valueOf(statusString);
+            }
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e){
+            System.out.println("Get status failed: " + e.getMessage());
+        }
+
+
+        return status;
+    }
 
     public boolean addItem(Item item){
         try {
@@ -261,20 +323,20 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean checkOut(Item item) {
+    public boolean checkOut(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.CheckedOut.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
             c.setAutoCommit(true);
             c.close();
-            System.out.println("Checked out " + item.getTitle());
+            System.out.println("Checked out " + itemId);
 
 
         } catch (Exception e) {
@@ -284,20 +346,20 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean checkIn(Item item) {
+    public boolean checkIn(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.InLibrary.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
             c.setAutoCommit(true);
             c.close();
-            System.out.println("Checked in " + item.getTitle());
+            System.out.println("Checked in " + itemId);
 
         } catch (Exception e) {
             System.out.println("Item Checkin failed: " + e.getMessage());
@@ -306,15 +368,16 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean renewItem(Item item) {
+    public boolean renewItem(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.CheckedOut.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
 
+            System.out.println(itemId + " renewed");
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
@@ -346,6 +409,95 @@ public class DatabaseManager {
             return false;
         }
         return true;
+    }
+
+    public boolean updateItem(Item item) {
+        boolean updated = false;
+        try {
+            Connection connection = getDatConnection();
+            Statement stmt = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + ITEM_TABLE + " SET "
+                    + "cost" + " = ? ,"     //1
+                    + "genre" + " = ? ,"    //2
+                    + "title" + " = ? ,"    //3
+                    + "status" + " = ?, "    //4
+                    + "type_" + " = ? ,"     //5
+                    + "author" + " = ?, "    //6
+                    + "isbn" + " = ?, "      //7
+                    + "accessPnt" + " = ?, " //8
+                    + "location" + " = ?, "  //9
+                    + "numDiscs" + " = ?, "  //10
+                    + "runTime" + " = ?, "   //11
+                    + "artist" + " = ?, "    //12
+                    + "director" + " = ?, "  //13
+                    + "mainActor" + " = ? " //14
+                    + "WHERE ID = ?");
+
+            preparedStatement.setInt(1, item.getCost());
+            preparedStatement.setString(2, item.getGenre());
+            preparedStatement.setString(3, item.getTitle());
+            preparedStatement.setString(4, item.getStatus().toString());
+            preparedStatement.setString(5, item.getType().toString());
+
+            if (item instanceof Book) {
+                preparedStatement.setString(6, ((Book) item).getAuthor());
+                preparedStatement.setInt(7, ((Book) item).getISBN());
+            } else if (item instanceof DiscItem){
+                preparedStatement.setInt(10, ((DiscItem) item).getNumDiscs());
+                preparedStatement.setString(11, ((DiscItem) item).getRuntime());
+            }
+            switch (item.getType()) {
+                case HardCopy:
+                    preparedStatement.setString(9, ((HardCopy) item).getLocationInLibrary());
+                    break;
+                case eBook:
+                    preparedStatement.setString(8, ((EBook) item).getAccessPoint());
+                    break;
+                case AudioBook:
+                    preparedStatement.setString(6, ((AudioBook) item).getAuthor());
+                    preparedStatement.setInt(7, ((AudioBook) item).getISBN());
+                    break;
+                case CD:
+                    preparedStatement.setString(12, ((CD) item).getArtist());
+                    break;
+                case DVD:
+                    preparedStatement.setString(13, ((DVD) item).getDirector());
+                    preparedStatement.setString(14, ((DVD) item).getMainActor());
+                    break;
+            }
+
+            updated = preparedStatement.execute();
+
+            if (updated) {
+                System.out.println("Update to " + item.getItemID() + " successful");
+            } else {
+                System.out.println("Update to " + item.getItemID() + " unsuccessful");
+
+            }
+            stmt.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Member update failed : " + e.getMessage());
+        }
+        return updated;
+    }
+
+    public boolean deleteItem(int itemId) {
+        try {
+            Connection connection = getDatConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "DELETE FROM " + ITEM_TABLE + " WHERE ID=" + itemId +";";
+
+            return statement.execute(sql);
+        } catch (Exception e){
+            System.out.println("delete item failed: "+ e.getMessage());
+        }
+
+        return false;
     }
 
 
@@ -435,6 +587,7 @@ public class DatabaseManager {
                 System.out.println("ID: " + id);
                 System.out.println("Title: " + title);
                 System.out.println("status: " + resultSet.getString("status"));
+                System.out.println("Type: " + resultSet.getString("type_"));
                 System.out.println();
             }
             statement.close();
@@ -443,6 +596,82 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.getMessage();
         }
+    }
+
+    public List<Item> searchItem(String searchParam){
+        List <Item> list = new ArrayList<>();
+
+        try {
+            Connection connection = getDatConnection();
+
+//            String sql = "select * FROM ? WHERE information like ?";
+//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//            preparedStatement.setString(1, ITEM_TABLE);
+//            preparedStatement.setString(2, searchParam);
+            Statement statement = connection.createStatement();
+            String sql = "select * FROM " + ITEM_TABLE + " WHERE title like '%" + searchParam + "%'";
+            ResultSet resultSet = statement.executeQuery(
+                    sql);
+
+            while (resultSet.next()) {
+                Item item;
+                Type type = Type.valueOf(resultSet.getString("type_"));
+
+                //Type specific field
+                switch (type) {
+                    case HardCopy:
+                        item = new HardCopy();
+                        ((HardCopy) item).setAuthor(resultSet.getString("author"));
+                        ((HardCopy) item).setISBN(resultSet.getInt("isbn"));
+                        ((HardCopy) item).setLocationInLibrary(resultSet.getString("location"));
+                        break;
+                    case eBook:
+                        item = new EBook();
+                        ((EBook) item).setAuthor(resultSet.getString("author"));
+                        ((EBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((EBook) item).setAccessPoint(resultSet.getString("accessPnt"));
+                        break;
+                    case AudioBook:
+                        item = new AudioBook();
+                        ((AudioBook) item).setAuthor(resultSet.getString("author"));
+                        ((AudioBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((AudioBook) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((AudioBook) item).setRuntime(resultSet.getString("runTime"));
+                        break;
+                    case CD:
+                        item = new CD();
+                        ((CD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((CD) item).setRuntime(resultSet.getString("runTime"));
+                        ((CD) item).setArtist(resultSet.getString("artist"));
+                        break;
+                    case DVD:
+                    default:
+                        item = new DVD();
+                        ((DVD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((DVD) item).setRuntime(resultSet.getString("runTime"));
+                        ((DVD) item).setDirector(resultSet.getString("director"));
+                        ((DVD) item).setMainActor(resultSet.getString("mainActor"));
+                        break;
+                }
+                //Generic fields
+                item.setItemID(resultSet.getInt("ID"));
+                item.setCost(resultSet.getInt("cost"));
+                item.setGenre(resultSet.getString("genre"));
+                item.setTitle(resultSet.getString("title"));
+                item.setStatus(Status.valueOf(resultSet.getString("status")));
+                item.setType(type); //from earlier
+                list.add(item);
+            }
+
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Item search failed: " + e.getMessage());
+        }
+
+        return list;
     }
 
     /*
@@ -489,14 +718,15 @@ public class DatabaseManager {
             Class.forName("org.sqlite.JDBC");
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + MEMBER_TABLE + " "
+            String sql = "CREATE TABLE IF NOT EXISTS " + MEMBER_TABLE + " "
                              + "(" + MEMBER_ID + "                  INTEGER PRIMARY KEY UNIQUE NOT NULL, "
                              +  MEMBER_NAME  + "                 TEXT, "
                              +  MEMBER_FINES + "                 DOUBLE PRECISION, "
                              +  MEMBER_CANCHECKOUT + "           INTEGER, "
-                             +  MEMBER_ISLIBRARIAN + "           INTEGER"
-                             + ");"
-            );
+                             +  MEMBER_ISLIBRARIAN + "           INTEGER,"
+                             +  MEMBER_PASSWORD + "              TEXT"
+                             + ");";
+            stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
             connection.close();
@@ -510,8 +740,15 @@ public class DatabaseManager {
     Connection getDatConnection() throws Exception {
         try {
             Class.forName("org.sqlite.JDBC");
+
             Connection connection = DriverManager.getConnection(DATABASE_NAME);
+            Statement statement = connection.createStatement();
+//            statement.executeUpdate("DROP TABLE " + MEMBER_TABLE);
+//            statement.executeUpdate("DROP TABLE " + ITEM_TABLE);
             connection.setAutoCommit(false);
+
+//            statement.executeUpdate("DELETE FROM " + MEMBER_TABLE);
+
             return connection;
         } catch (Exception e) {
             System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
@@ -524,4 +761,5 @@ public class DatabaseManager {
     static final String MEMBER_FINES= "fines";
     static final String MEMBER_CANCHECKOUT = "canCheckout";
     static final String MEMBER_ISLIBRARIAN = "islibrarian";
+    static final String MEMBER_PASSWORD = "password";
 }

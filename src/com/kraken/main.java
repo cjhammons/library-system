@@ -6,10 +6,11 @@ import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
-import com.kraken.UserInterface.StartScreen;
+import com.kraken.UserInterface.ItemTransaction;
+import com.kraken.UserInterface.WelcomeScreen;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -18,6 +19,10 @@ import java.util.List;
  * Driver class with the main method
  */
 public class main {
+
+    public static final Dimension WINDOW_DIMENSION = new Dimension(500,500);
+    public static final Member CUR_USER = null;
+
     public static void main(String[] args) {
 
         DatabaseManager databaseManager = null;
@@ -39,13 +44,16 @@ public class main {
 //        testAddMember(databaseManager);
 //        testUpdateMember(databaseManager);
 //        testCheckout(databaseManager);
-        testUpdateMember(databaseManager);
-        databaseManager.printMemberTable();
+//        testUpdateMember(databaseManager);
+//        databaseManager.printMemberTable();
+//        testUpdateItem(databaseManager);
+//        testSearchItem(databaseManager);
 
-        JFrame frame = new JFrame("Start screen");
-        frame.setContentPane(new StartScreen().getMain_panel());
+        JFrame frame = new JFrame("start screen");
+        frame.setContentPane(new WelcomeScreen().getWelcome_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,500);
+        frame.setPreferredSize(WINDOW_DIMENSION);
+
         frame.pack();
         frame.setVisible(true);
     }
@@ -56,13 +64,26 @@ public class main {
     *  --------------------------------------------------------------
     */
 
+    static void testSearchItem(DatabaseManager databaseManager){
+        List<Item> list = databaseManager.searchItem("Paul");
+        databaseManager.printItemTable();
+    }
+
+    static void testUpdateItem(DatabaseManager databaseManager) {
+        List<Item> list = databaseManager.getAllItems();
+        Item item = list.get(0);
+        item.setTitle("THIS TITLE HAS BEEN CHANGED");
+        databaseManager.updateItem(item);
+        databaseManager.printItemTable();
+    }
+
     static void testCheckout(DatabaseManager databaseManager) {
         List<Item> list = databaseManager.getAllItems();
         Item item = list.get(0);
         if (item.getStatus() == Status.CheckedOut) {
-            databaseManager.checkIn(item);
+//            databaseManager.checkIn(item);
         } else {
-            databaseManager.checkOut(item);
+//            databaseManager.checkOut(item);
         }
 
     }
@@ -72,6 +93,7 @@ public class main {
         member.setFines(3.14);
         member.setCanCheckOut(true);
         member.setLibrarian(true);
+        member.setPassword("1234");
         databaseManager.addMember(member);
         databaseManager.printMemberTable();
     }
@@ -79,7 +101,7 @@ public class main {
     static void testUpdateMember(DatabaseManager databaseManager) {
         List<Member> list = databaseManager.getAllMembers();
         if (list.size()<1) { return; }
-        Member member = list.get(0);
+        Member member = list.get(1);
         member.setName("THIS NAME HAS BEEN CHANGED");
         boolean updated = databaseManager.updateMember(member);
     }

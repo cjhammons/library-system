@@ -14,6 +14,7 @@ public class AudioBook extends DiscItem{
      */
     public AudioBook() {
         super();
+        setType(Type.AudioBook);
     }
 
     @Override
