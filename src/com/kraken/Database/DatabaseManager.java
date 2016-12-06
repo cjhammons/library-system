@@ -11,6 +11,7 @@ import com.kraken.DataStructures.Items.DiscItems.DVD;
 import com.kraken.DataStructures.Items.DiscItems.DiscItem;
 import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
+import com.kraken.main;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -285,6 +286,31 @@ public class DatabaseManager {
             return false;
         }
         return true;
+    }
+
+    public boolean validateMember(int memberId, String password){
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE
+                    + " WHERE ID=" + memberId + " and password="+password+";");
+
+            if (resultSet.next()){
+                Member member = new Member();
+
+                member.setName(resultSet.getString(MEMBER_NAME));
+                member.setFines(resultSet.getDouble(MEMBER_FINES));
+                member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
+                member.setMemberId(resultSet.getInt(MEMBER_ID));
+                member.setPassword(resultSet.getString(MEMBER_PASSWORD));
+                main.CUR_USER = member;
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("Validate member failed: " + e.getMessage());
+        }
+        return false;
     }
 
     /*
