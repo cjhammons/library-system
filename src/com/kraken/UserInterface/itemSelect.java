@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 
 /**
  * Created by Curtis on 12/6/2016.
+ *
+ * Picks the type of item to be added
  */
 public class itemSelect {
     private JPanel item_select_panel;
@@ -18,11 +20,6 @@ public class itemSelect {
     private JButton okButton;
 
     public itemSelect() {
-//        itemBox.insertItemAt("Hard Copy Book", 1);
-//        itemBox.insertItemAt("eBook", 2);
-//        itemBox.insertItemAt("Audio Book", 3);
-//        itemBox.insertItemAt("DVD", 4);
-//        itemBox.insertItemAt("CD", 5);
 
         okButton.addActionListener(new ActionListener() {
             @Override

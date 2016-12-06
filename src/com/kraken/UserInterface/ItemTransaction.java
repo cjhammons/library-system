@@ -35,6 +35,18 @@ public class ItemTransaction {
             }
         });
 
+        searchCatalogButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Search Catalog");
+                frame.setContentPane(new SearchCatalog().getSearch_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
 
     }
 

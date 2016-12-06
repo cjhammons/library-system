@@ -45,6 +45,7 @@ public class main {
 //        testUpdateMember(databaseManager);
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
+        testSearchItem(databaseManager);
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new ItemTransaction().getMain_panel());
@@ -61,6 +62,11 @@ public class main {
     *           make sure all these get deleted before submit. //TODO
     *  --------------------------------------------------------------
     */
+
+    static void testSearchItem(DatabaseManager databaseManager){
+        List<Item> list = databaseManager.searchItem("Paul");
+        databaseManager.printItemTable();
+    }
 
     static void testUpdateItem(DatabaseManager databaseManager) {
         List<Item> list = databaseManager.getAllItems();

@@ -13,6 +13,8 @@ import com.kraken.Database.DatabaseManager;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by Jessica on 12/5/16.
@@ -38,6 +40,90 @@ public class addItem {
     Type mType;
     public addItem(Type type)
     {
+        titleField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                titleField.setText("");
+            }
+        });
+        genreField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                genreField.setText("");
+            }
+        });
+        costField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                costField.setText("");
+            }
+        });
+        authorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                authorField.setText("");
+            }
+        });
+        isbnField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                isbnField.setText("");
+            }
+        });
+        accessPointField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                accessPointField.setText("");
+            }
+        });
+        locationField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                locationField.setText("");
+            }
+        });
+        numDiscsField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                numDiscsField.setText("");
+            }
+        });
+        runtimeField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                runtimeField.setText("");
+            }
+        });
+        artistField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                artistField.setText("");
+            }
+        });
+        directorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                directorField.setText("");
+            }
+        });
+        mainActorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                mainActorField.setText("");
+            }
+        });
         mType = type;
         switch (mType){
             case HardCopy:

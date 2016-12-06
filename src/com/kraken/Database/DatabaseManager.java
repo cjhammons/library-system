@@ -132,7 +132,7 @@ public class DatabaseManager {
                 System.out.println("Update to " + member.getMemberId() + " unsuccessful");
 
             }
-            stmt.close();
+            preparedStatement.close();
             connection.commit();
             connection.setAutoCommit(true);
             connection.close();
@@ -520,6 +520,7 @@ public class DatabaseManager {
                 System.out.println("ID: " + id);
                 System.out.println("Title: " + title);
                 System.out.println("status: " + resultSet.getString("status"));
+                System.out.println("Type: " + resultSet.getString("type_"));
                 System.out.println();
             }
             statement.close();
@@ -528,6 +529,82 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.getMessage();
         }
+    }
+
+    public List<Item> searchItem(String searchParam){
+        List <Item> list = new ArrayList<>();
+
+        try {
+            Connection connection = getDatConnection();
+
+//            String sql = "select * FROM ? WHERE information like ?";
+//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//            preparedStatement.setString(1, ITEM_TABLE);
+//            preparedStatement.setString(2, searchParam);
+            Statement statement = connection.createStatement();
+            String sql = "select * FROM " + ITEM_TABLE + " WHERE title like '%" + searchParam + "%'";
+            ResultSet resultSet = statement.executeQuery(
+                    sql);
+
+            while (resultSet.next()) {
+                Item item;
+                Type type = Type.valueOf(resultSet.getString("type_"));
+
+                //Type specific field
+                switch (type) {
+                    case HardCopy:
+                        item = new HardCopy();
+                        ((HardCopy) item).setAuthor(resultSet.getString("author"));
+                        ((HardCopy) item).setISBN(resultSet.getInt("isbn"));
+                        ((HardCopy) item).setLocationInLibrary(resultSet.getString("location"));
+                        break;
+                    case eBook:
+                        item = new EBook();
+                        ((EBook) item).setAuthor(resultSet.getString("author"));
+                        ((EBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((EBook) item).setAccessPoint(resultSet.getString("accessPnt"));
+                        break;
+                    case AudioBook:
+                        item = new AudioBook();
+                        ((AudioBook) item).setAuthor(resultSet.getString("author"));
+                        ((AudioBook) item).setISBN(resultSet.getInt("isbn"));
+                        ((AudioBook) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((AudioBook) item).setRuntime(resultSet.getString("runTime"));
+                        break;
+                    case CD:
+                        item = new CD();
+                        ((CD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((CD) item).setRuntime(resultSet.getString("runTime"));
+                        ((CD) item).setArtist(resultSet.getString("artist"));
+                        break;
+                    case DVD:
+                    default:
+                        item = new DVD();
+                        ((DVD) item).setNumDiscs(resultSet.getInt("numDiscs"));
+                        ((DVD) item).setRuntime(resultSet.getString("runTime"));
+                        ((DVD) item).setDirector(resultSet.getString("director"));
+                        ((DVD) item).setMainActor(resultSet.getString("mainActor"));
+                        break;
+                }
+                //Generic fields
+                item.setItemID(resultSet.getInt("ID"));
+                item.setCost(resultSet.getInt("cost"));
+                item.setGenre(resultSet.getString("genre"));
+                item.setTitle(resultSet.getString("title"));
+                item.setStatus(Status.valueOf(resultSet.getString("status")));
+                item.setType(type); //from earlier
+                list.add(item);
+            }
+
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Item search failed: " + e.getMessage());
+        }
+
+        return list;
     }
 
     /*
