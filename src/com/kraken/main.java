@@ -50,7 +50,7 @@ public class main {
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
 //        testSearchItem(databaseManager);
-        //databaseManager.printMemberTable();
+        databaseManager.printMemberTable();
         //testValidate(databaseManager);
         //JFrame frame = new JFrame("start screen");
         //frame.setContentPane(new WelcomeScreen().getWelcome_panel());

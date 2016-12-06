@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static com.kraken.main.CUR_USER;
 import static com.kraken.main.WINDOW_DIMENSION;
 
 /**
@@ -22,6 +23,7 @@ public class MemberTransaction {
     private JButton payFineButton;
 
     public MemberTransaction() {
+
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

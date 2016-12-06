@@ -49,7 +49,7 @@ public class DeleteItem {
                 delete();
             }
         });
-        new DatabaseManager().printMemberTable();
+        new DatabaseManager().printItemTable();
     }
 
     void delete() {
@@ -60,7 +60,7 @@ public class DeleteItem {
         } else {
             workedText.setText(id + " not deleted");
         }
-        new DatabaseManager().printMemberTable();
+        new DatabaseManager().printItemTable();
     }
 
     public JPanel getDelete_panel() {

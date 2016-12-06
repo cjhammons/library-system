@@ -63,8 +63,8 @@ public class DatabaseManager {
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Delete Member failed.");
-            printMemberTable();
+            System.out.println("Delete Item failed.");
+            printItemTable();
             return false;
         }
 
@@ -397,21 +397,19 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean deleteItem(int itemID) {
+    public boolean deleteItem(Item item) {
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            String sql = "DELETE from " + ITEM_TABLE + " where ID=" + itemID;
+            String sql = "DELETE from " + ITEM_TABLE + " where ID=" + item.getItemID();
             stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
-            connection.setAutoCommit(true);
             connection.close();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Delete Item failed.");
-            //printItemTable();
+            printItemTable();
             return false;
         }
 
@@ -559,7 +557,7 @@ public class DatabaseManager {
         return updated;
     }
 
-    /*public boolean deleteItem(int itemId) {
+    public boolean deleteItem(int itemId) {
         try {
             Connection connection = getDatConnection();
             Statement statement = connection.createStatement();
@@ -572,7 +570,7 @@ public class DatabaseManager {
         }
 
         return false;
-    }*/
+    }
 
 
     /**

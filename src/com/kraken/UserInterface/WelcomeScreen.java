@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static com.kraken.main.CUR_USER;
 import static com.kraken.main.WINDOW_DIMENSION;
 
 /**
@@ -29,6 +30,10 @@ public class WelcomeScreen {
                 frame.setVisible(true);
             }
         });
+
+        if (!CUR_USER.isLibrarian()) {
+            memberTransactionsButton.setVisible(false);
+        }
 
         memberTransactionsButton.addActionListener(new ActionListener() {
             @Override

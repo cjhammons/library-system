@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static com.kraken.main.CUR_USER;
 import static com.kraken.main.WINDOW_DIMENSION;
 
 /**
@@ -37,6 +38,17 @@ public class ItemTransaction {
                 frame.setVisible(true);
             }
         });
+
+        if (!CUR_USER.isLibrarian()) {
+            printItemListButton.setVisible(false);
+            addItemButton.setVisible(false);
+            deleteItemButton.setVisible(false);
+            checkinItemButton.setVisible(false);
+            checkoutItemButton.setVisible(false);
+            renewItemButton.setVisible(false);
+
+
+        }
 
         searchCatalogButton.addActionListener(new ActionListener() {
             @Override
