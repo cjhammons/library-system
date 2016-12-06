@@ -36,12 +36,12 @@ public class main {
 //        testAddPlsIgnore(databaseManager);
 //        testDeletePlsIgnore(databaseManager);
 //        getAllTest(databaseManager);
-//        testAddMember(databaseManager);
+        testAddMember(databaseManager);
 //        testUpdateMember(databaseManager);
 //        testCheckout(databaseManager);
 //        testUpdateMember(databaseManager);
 //        databaseManager.printMemberTable();
-        testUpdateItem(databaseManager);
+//        testUpdateItem(databaseManager);
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
@@ -81,6 +81,7 @@ public class main {
         member.setFines(3.14);
         member.setCanCheckOut(true);
         member.setLibrarian(true);
+        member.setPassword("1234");
         databaseManager.addMember(member);
         databaseManager.printMemberTable();
     }

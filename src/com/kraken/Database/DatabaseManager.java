@@ -70,17 +70,24 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean addMember(Member member) {
+    public int addMember(Member member) {
+        int retval = -1;
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
             int checkoutInt = (member.canCheckOut())? 1 : 0;
             int librarianInt = (member.canCheckOut())? 1 : 0;
             String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian," + MEMBER_PASSWORD + ") "
-                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt + "," + MEMBER_PASSWORD
+                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt + "," + member.getPassword()
                         + " );";
 
-            stmt.executeUpdate(sql);
+            String curval = "SELECT "+MEMBER_TABLE+".CURRVAL FROM dual";
+
+//            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ResultSet resultSet = stmt.executeQuery(sql); //, Statement.RETURN_GENERATED_KEYS);
+
+
             stmt.close();
             connection.commit();
             connection.setAutoCommit(true);
@@ -89,7 +96,7 @@ public class DatabaseManager {
             System.out.println("Add member failed: " + e.getMessage());
         }
 
-        return true;
+        return retval;
     }
 
     public boolean updateMember(Member member) {
@@ -111,8 +118,8 @@ public class DatabaseManager {
             preparedStatement.setDouble(2, member.getFines());
             preparedStatement.setInt(3, checkoutInt);
             preparedStatement.setInt(4, librarianInt);
-            preparedStatement.setInt(5, member.getMemberId());
-//            preparedStatement.setString();
+            preparedStatement.setString(5, member.getPassword());
+            preparedStatement.setInt(6, member.getMemberId());
             updated = preparedStatement.execute();
 
             if (updated) {
@@ -147,6 +154,7 @@ public class DatabaseManager {
                 member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
                 member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
                 member.setMemberId(resultSet.getInt(MEMBER_ID));
+                member.setPassword(resultSet.getString(MEMBER_PASSWORD));
                 list.add(member);
             }
             statement.close();
@@ -175,6 +183,7 @@ public class DatabaseManager {
                 System.out.println("Name: " + title);
                 System.out.println("Librarian: " + resultSet.getBoolean(MEMBER_ISLIBRARIAN));
                 System.out.println("Can checkout: " + resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                System.out.println("Password (pls dont hack me): " + resultSet.getString(MEMBER_PASSWORD));
                 System.out.println();
             }
             statement.close();
@@ -561,15 +570,15 @@ public class DatabaseManager {
             Class.forName("org.sqlite.JDBC");
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + MEMBER_TABLE + " "
+            String sql = "CREATE TABLE IF NOT EXISTS " + MEMBER_TABLE + " "
                              + "(" + MEMBER_ID + "                  INTEGER PRIMARY KEY UNIQUE NOT NULL, "
                              +  MEMBER_NAME  + "                 TEXT, "
                              +  MEMBER_FINES + "                 DOUBLE PRECISION, "
                              +  MEMBER_CANCHECKOUT + "           INTEGER, "
                              +  MEMBER_ISLIBRARIAN + "           INTEGER,"
                              +  MEMBER_PASSWORD + "              TEXT"
-                             + ");"
-            );
+                             + ");";
+            stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
             connection.close();
@@ -583,11 +592,15 @@ public class DatabaseManager {
     Connection getDatConnection() throws Exception {
         try {
             Class.forName("org.sqlite.JDBC");
+
             Connection connection = DriverManager.getConnection(DATABASE_NAME);
+            Statement statement = connection.createStatement();
+//            statement.executeUpdate("DROP TABLE " + MEMBER_TABLE);
+//            statement.executeUpdate("DROP TABLE " + ITEM_TABLE);
             connection.setAutoCommit(false);
 
-            Statement statement = connection.createStatement();
-//            statement.executeUpdate("DELETE FROM " + ITEM_TABLE);
+//            statement.executeUpdate("DELETE FROM " + MEMBER_TABLE);
+
             return connection;
         } catch (Exception e) {
             System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
