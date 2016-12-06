@@ -20,6 +20,7 @@ public class ItemTransaction {
     private JButton searchCatalogButton;
     private JButton checkItemStatusButton;
     private JButton printItemListButton;
+    private JButton deleteItemButton;
 
     public ItemTransaction() {
         addItemButton.addActionListener(new ActionListener() {
