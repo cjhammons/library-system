@@ -51,11 +51,11 @@ public class DatabaseManager {
     * ----------------------------------------------------------------------------------------------------------
     */
 
-    public boolean deleteMember(Member member) {
+    public boolean deleteMember(int memberId) {
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            String sql = "DELETE from " + MEMBER_TABLE + " where ID=" + member.getMemberId();
+            String sql = "DELETE from " + MEMBER_TABLE + " where ID=" + memberId;
             stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
@@ -76,7 +76,7 @@ public class DatabaseManager {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
             int checkoutInt = (member.canCheckOut())? 1 : 0;
-            int librarianInt = (member.canCheckOut())? 1 : 0;
+            int librarianInt = (member.isLibrarian())? 1 : 0;
             String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian," + MEMBER_PASSWORD + ") "
                         + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt + "," + member.getPassword()
                         + " );";
@@ -199,7 +199,30 @@ public class DatabaseManager {
         }
     };
 
+    public boolean checkMemberStatus(int memberId){
 
+        try {
+            Connection connection = getDatConnection();
+
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM " + MEMBER_TABLE + " WHERE ID = " + memberId + ";";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()){
+                boolean ret = resultSet.getBoolean(MEMBER_CANCHECKOUT);
+                return ret;
+            }
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e){
+            System.out.println("Member status check failed: " + e.getMessage());
+        }
+
+        return false;
+    }
 
     /*
     * ----------------------------------------------------------------------------------------------------------
@@ -221,6 +244,10 @@ public class DatabaseManager {
                 String statusString = resultSet.getString("status");
                 status = Status.valueOf(statusString);
             }
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
         } catch (Exception e){
             System.out.println("Get status failed: " + e.getMessage());
         }
@@ -228,6 +255,7 @@ public class DatabaseManager {
 
         return status;
     }
+
     public boolean addItem(Item item){
         try {
             Connection connection = getDatConnection();

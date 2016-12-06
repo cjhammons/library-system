@@ -13,32 +13,23 @@ import static com.kraken.main.WINDOW_DIMENSION;
 /**
  * Created by Curtis on 12/6/2016.
  */
-public class DeleteItem {
-
-    private JTextField itemIDField;
+public class DeleteMember {
+    private JTextField memberIDField;
+    private JPanel deletePanel;
     private JTextField workedText;
     private JButton deleteButton;
     private JButton backButton;
-    private JPanel delete_panel;
 
-    public DeleteItem(){
+    public DeleteMember(){
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame("start screen");
-                frame.setContentPane(new ItemTransaction().getMain_panel());
+                frame.setContentPane(new MemberTransaction().getMembertransactionsPanel());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(WINDOW_DIMENSION);
                 frame.pack();
                 frame.setVisible(true);
-            }
-        });
-
-        itemIDField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                itemIDField.setText("");
             }
         });
 
@@ -48,21 +39,27 @@ public class DeleteItem {
                 delete();
             }
         });
-        new DatabaseManager().printMemberTable();
+
+        memberIDField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                memberIDField.setText("");
+            }
+        });
     }
 
     void delete(){
-        int id = Integer.parseInt(itemIDField.getText());
-        boolean success = new DatabaseManager().deleteItem(id);
-        if (success){
-            workedText.setText(id + " deleted");
-        } else {
-            workedText.setText(id + " not deleted");
-        }
+        int id = Integer.parseInt(memberIDField.getText());
+        boolean success= new DatabaseManager().deleteMember(id);
+        if (success) {workedText.setText(id + " deleted successfully"); }
+        else { workedText.setText(id + " Not deleted successfully"); }
+
         new DatabaseManager().printMemberTable();
     }
 
-    public JPanel getDelete_panel() {
-        return delete_panel;
+
+    public JPanel getDeletePanel() {
+        return deletePanel;
     }
 }

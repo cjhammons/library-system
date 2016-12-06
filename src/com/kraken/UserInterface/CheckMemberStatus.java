@@ -13,15 +13,15 @@ import static com.kraken.main.WINDOW_DIMENSION;
 /**
  * Created by Curtis on 12/6/2016.
  */
-public class DeleteItem {
-
-    private JTextField itemIDField;
+public class CheckMemberStatus {
+    private JPanel checkStatusPanel;
+    private JTextField memberIDField;
     private JTextField workedText;
-    private JButton deleteButton;
+    private JButton checkButton;
     private JButton backButton;
-    private JPanel delete_panel;
 
-    public DeleteItem(){
+
+    public CheckMemberStatus() {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -34,35 +34,38 @@ public class DeleteItem {
             }
         });
 
-        itemIDField.addMouseListener(new MouseAdapter() {
+        memberIDField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                itemIDField.setText("");
+                memberIDField.setText("");
             }
         });
 
-        deleteButton.addActionListener(new ActionListener() {
+        checkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                delete();
+                check();
             }
         });
-        new DatabaseManager().printMemberTable();
     }
 
-    void delete(){
-        int id = Integer.parseInt(itemIDField.getText());
-        boolean success = new DatabaseManager().deleteItem(id);
-        if (success){
-            workedText.setText(id + " deleted");
+    void check(){
+        int id = Integer.parseInt(memberIDField.getText());
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        boolean canCheckout = databaseManager.checkMemberStatus(id);
+
+        if (canCheckout){
+            workedText.setText(id + " can check out");
         } else {
-            workedText.setText(id + " not deleted");
+            workedText.setText(id + " can't check out");
         }
-        new DatabaseManager().printMemberTable();
+
+        databaseManager.printMemberTable();
     }
 
-    public JPanel getDelete_panel() {
-        return delete_panel;
+    public JPanel getCheckStatusPanel() {
+        return checkStatusPanel;
     }
 }

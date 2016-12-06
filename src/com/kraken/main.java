@@ -7,6 +7,7 @@ import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.ItemTransaction;
+import com.kraken.UserInterface.WelcomeScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +21,7 @@ import java.util.List;
 public class main {
 
     public static final Dimension WINDOW_DIMENSION = new Dimension(500,500);
+    public static final Member CUR_USER = null;
 
     public static void main(String[] args) {
 
@@ -45,12 +47,11 @@ public class main {
 //        testUpdateMember(databaseManager);
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
-        testSearchItem(databaseManager);
+//        testSearchItem(databaseManager);
 
         JFrame frame = new JFrame("start screen");
-        frame.setContentPane(new ItemTransaction().getMain_panel());
+        frame.setContentPane(new WelcomeScreen().getWelcome_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(500,500);
         frame.setPreferredSize(WINDOW_DIMENSION);
 
         frame.pack();
