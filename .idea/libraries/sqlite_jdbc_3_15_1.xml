@@ -4,6 +4,7 @@
       <root url="jar://C:/_program/sqlite-jdbc-3.15.1.jar!/" />
       <root url="jar://C:/_tools/sqlite-jdbc-3.15.1.jar!/" />
       <root url="jar://$USER_HOME$/Downloads/sqlite-jdbc-3.15.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/Fall 2016/sqlite-jdbc-3.15.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
