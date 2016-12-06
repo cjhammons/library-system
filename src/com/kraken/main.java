@@ -6,10 +6,9 @@ import com.kraken.DataStructures.Items.Books.HardCopy;
 import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
-import com.kraken.UserInterface.StartScreen;
+import com.kraken.UserInterface.ItemTransaction;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class main {
         databaseManager.printMemberTable();
 
         JFrame frame = new JFrame("start screen");
-        frame.setContentPane(new StartScreen().getMain_panel());
+        frame.setContentPane(new ItemTransaction().getMain_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500,500);
         frame.pack();
