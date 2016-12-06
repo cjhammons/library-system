@@ -17,6 +17,8 @@ public class MemberTransaction {
     private JButton checkMemberStatusButton;
     private JButton backButton;
     private JPanel membertransactionsPanel;
+    private JButton searchMembersButton;
+    private JButton payFineButton;
 
     public MemberTransaction(){
         backButton.addActionListener(new ActionListener() {
@@ -67,7 +69,46 @@ public class MemberTransaction {
                 frame.setVisible(true);
             }
         });
+
+        printMemberListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print Members");
+                frame.setContentPane(new PrintMemberList().getPrintMemberPanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        searchMembersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Search Member");
+                frame.setContentPane(new SearchMember().getSearchMemberPanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        payFineButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Pay Fine");
+                frame.setContentPane(new PayFine().getPayFinePanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
     }
+
+
 
 
     public JPanel getMembertransactionsPanel() {
