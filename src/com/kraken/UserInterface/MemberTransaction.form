@@ -15,6 +15,7 @@
           </grid>
         </constraints>
         <properties>
+          <editable value="false"/>
           <text value="Member Transactions"/>
         </properties>
       </component>
@@ -26,12 +27,12 @@
           <text value="Add Member"/>
         </properties>
       </component>
-      <component id="e772d" class="javax.swing.JButton" binding="delteMemberButton" default-binding="true">
+      <component id="e772d" class="javax.swing.JButton" binding="deleteMemberButton" default-binding="true">
         <constraints>
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Delte Member"/>
+          <text value="Delete Member"/>
         </properties>
       </component>
       <component id="898eb" class="javax.swing.JButton" binding="printMemberListButton" default-binding="true">

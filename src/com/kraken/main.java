@@ -47,7 +47,7 @@ public class main {
 //        testUpdateMember(databaseManager);
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
-        testSearchItem(databaseManager);
+//        testSearchItem(databaseManager);
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new WelcomeScreen().getWelcome_panel());
