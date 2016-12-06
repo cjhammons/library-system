@@ -10,12 +10,13 @@ public class Member {
     double fines;
     boolean canCheckOut;
     boolean isLibrarian;
+    String password;
 
     /**
      * Default Constructor
      */
     public Member() {
-
+        isLibrarian = false;
     }
 
     public boolean isLibrarian() {
@@ -32,6 +33,10 @@ public class Member {
 
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public boolean canCheckOut() {
@@ -57,4 +62,6 @@ public class Member {
     public void setLibrarian(boolean librarian) {
         isLibrarian = librarian;
     }
+
+    public void setPassword(String password) {this.password = password;}
 }
