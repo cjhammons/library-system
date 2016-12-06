@@ -33,7 +33,7 @@ public class addItem {
         comboBox1.insertItemAt("CD", 5);
 
         int index = comboBox1.getSelectedIndex();
-        Item newItem;
+        Item newItem = null;
         switch(index) {
             case 1:
                 newItem = new HardCopy();
@@ -57,11 +57,11 @@ public class addItem {
         }
 
         newItem.setTitle(itemTitleTextField.getText());
-        int id = itemIDTextField.getText(); //THIS NEEDS TO BE CONVERTED
-        newItem.setItemID();
+        int id = Integer.parseInt(itemIDTextField.getText()); //THIS NEEDS TO BE CONVERTED
+        newItem.setItemID(id);
 
 
 
-
+        return newItem;
     }
 }
