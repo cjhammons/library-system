@@ -7,9 +7,11 @@ import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.ItemTransaction;
+import com.kraken.UserInterface.ValidateMember;
 import com.kraken.UserInterface.WelcomeScreen;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import java.util.List;
 public class main {
 
     public static final Dimension WINDOW_DIMENSION = new Dimension(500,500);
-    public static final Member CUR_USER = null;
+    public static Member CUR_USER = null;
 
     public static void main(String[] args) {
 
@@ -48,14 +50,23 @@ public class main {
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
 //        testSearchItem(databaseManager);
+        //databaseManager.printMemberTable();
+        //testValidate(databaseManager);
+        //JFrame frame = new JFrame("start screen");
+        //frame.setContentPane(new WelcomeScreen().getWelcome_panel());
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setPreferredSize(WINDOW_DIMENSION);
 
-        JFrame frame = new JFrame("start screen");
-        frame.setContentPane(new WelcomeScreen().getWelcome_panel());
+        //frame.pack();
+        //frame.setVisible(true);
+
+        JFrame frame = new JFrame("login screen");
+        frame.setContentPane(new ValidateMember().getLogin_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(WINDOW_DIMENSION);
-
         frame.pack();
         frame.setVisible(true);
+
     }
 
 
@@ -63,6 +74,10 @@ public class main {
     *           make sure all these get deleted before submit. //TODO
     *  --------------------------------------------------------------
     */
+
+    static void testValidate(DatabaseManager databaseManager){
+        boolean success = databaseManager.validateMember(9, "1");
+    }
 
     static void testSearchItem(DatabaseManager databaseManager){
         List<Item> list = databaseManager.searchItem("Paul");

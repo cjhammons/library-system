@@ -14,7 +14,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <text value="Member Id"/>
+        </properties>
       </component>
       <component id="629c8" class="javax.swing.JTextField" binding="workedText">
         <constraints>

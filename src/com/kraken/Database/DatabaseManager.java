@@ -11,6 +11,7 @@ import com.kraken.DataStructures.Items.DiscItems.DVD;
 import com.kraken.DataStructures.Items.DiscItems.DiscItem;
 import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
+import com.kraken.main;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -224,6 +225,94 @@ public class DatabaseManager {
         return false;
     }
 
+    public List<Member> searchMember(String searchParams){
+        try {
+            List<Member> list = new ArrayList<>();
+            Connection connection = getDatConnection();
+            Statement statement = connection.createStatement();
+            String sql = "select * FROM " + MEMBER_TABLE + " WHERE "+ MEMBER_NAME + " like '%" + searchParams + "%'";
+            ResultSet resultSet = statement.executeQuery(
+                    sql);
+            while(resultSet.next()) {
+                Member member = new Member();
+
+                member.setName(resultSet.getString(MEMBER_NAME));
+                member.setFines(resultSet.getDouble(MEMBER_FINES));
+                member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
+                member.setMemberId(resultSet.getInt(MEMBER_ID));
+                member.setPassword(resultSet.getString(MEMBER_PASSWORD));
+                list.add(member);
+            }
+            statement.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+            return list;
+        } catch (Exception e) {
+            System.out.println("Member search failed: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public boolean payFine(int memberId, double amount){
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+
+            String sql = "SELECT * FROM " + MEMBER_TABLE + " WHERE ID=" + memberId + ";";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+            statement.close();
+            double fines = 0;
+            while (resultSet.next()){
+                String costString = resultSet.getString(MEMBER_FINES);
+                fines = Double.parseDouble(costString);
+            }
+            fines = fines - amount;
+            sql = "UPDATE " + MEMBER_TABLE + " SET "
+                    + MEMBER_FINES + " = " + fines
+                    + " WHERE ID=" + memberId+ ";";
+
+            Statement statement1 = c.createStatement();
+            statement1.executeUpdate(sql);
+            statement1.close();
+            c.commit();
+            c.setAutoCommit(true);
+            c.close();
+        } catch (Exception e) {
+            System.out.println("Item Checkout failed: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateMember(int memberId, String password){
+        try {
+            Connection c = getDatConnection();
+            Statement statement = c.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE
+                    + " WHERE ID=" + memberId + " and password="+password+";");
+
+            if (resultSet.next()){
+                Member member = new Member();
+
+                member.setName(resultSet.getString(MEMBER_NAME));
+                member.setFines(resultSet.getDouble(MEMBER_FINES));
+                member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
+                member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
+                member.setMemberId(resultSet.getInt(MEMBER_ID));
+                member.setPassword(resultSet.getString(MEMBER_PASSWORD));
+                main.CUR_USER = member;
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("Validate member failed: " + e.getMessage());
+        }
+        return false;
+    }
+
     /*
     * ----------------------------------------------------------------------------------------------------------
     *                                               Item Methods
@@ -385,27 +474,6 @@ public class DatabaseManager {
             c.close();
         } catch (Exception e) {
             System.out.println("Item renew failed: " + e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-    public boolean payFine(Item item){
-        try {
-            Connection c = getDatConnection();
-            Statement statement = c.createStatement();
-
-            String sql = "UPDATE " + ITEM_TABLE + " SET "
-                    + "cost = 0"
-                    + "where ID = " + item.getItemID() + ";";
-
-            statement.executeUpdate(sql);
-            statement.close();
-            c.commit();
-            c.setAutoCommit(true);
-            c.close();
-        } catch (Exception e) {
-            System.out.println("Item Checkout failed: " + e.getMessage());
             return false;
         }
         return true;
@@ -603,11 +671,6 @@ public class DatabaseManager {
 
         try {
             Connection connection = getDatConnection();
-
-//            String sql = "select * FROM ? WHERE information like ?";
-//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-//            preparedStatement.setString(1, ITEM_TABLE);
-//            preparedStatement.setString(2, searchParam);
             Statement statement = connection.createStatement();
             String sql = "select * FROM " + ITEM_TABLE + " WHERE title like '%" + searchParam + "%'";
             ResultSet resultSet = statement.executeQuery(
