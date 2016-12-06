@@ -84,8 +84,12 @@ public class DatabaseManager {
             String curval = "SELECT "+MEMBER_TABLE+".CURRVAL FROM dual";
 
 //            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//            PreparedStatement stmt = connection.prepareStatement(sql);
+            int row = stmt.executeUpdate(sql); //, Statement.RETURN_GENERATED_KEYS);
 
-            ResultSet resultSet = stmt.executeQuery(sql); //, Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = stmt.getGeneratedKeys();
+            resultSet.next();
+            retval = resultSet.getInt(1);
 
 
             stmt.close();
