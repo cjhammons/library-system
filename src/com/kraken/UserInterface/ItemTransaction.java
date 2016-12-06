@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static com.kraken.main.WINDOW_DIMENSION;
+
 /**
  * Created by Curtis on 11/15/2016.
  */
@@ -21,6 +23,7 @@ public class ItemTransaction {
     private JButton checkItemStatusButton;
     private JButton printItemListButton;
     private JButton deleteItemButton;
+    private JButton backButton;
 
     public ItemTransaction() {
         addItemButton.addActionListener(new ActionListener() {
@@ -114,6 +117,18 @@ public class ItemTransaction {
                 frame.setContentPane(new DeleteItem().getDelete_panel());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("start screen");
+                frame.setContentPane(new WelcomeScreen().getWelcome_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
                 frame.pack();
                 frame.setVisible(true);
             }

@@ -228,6 +228,7 @@ public class DatabaseManager {
 
         return status;
     }
+
     public boolean addItem(Item item){
         try {
             Connection connection = getDatConnection();
