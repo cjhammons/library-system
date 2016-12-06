@@ -143,14 +143,14 @@ public class main {
         }
     }
 
-    static void testDeletePlsIgnore(DatabaseManager databaseManager) {
-        HardCopy book = new HardCopy();
-        book.setItemID(8);
-        if (databaseManager.deleteItem(book)) {
-            databaseManager.printItemTable();
-        } else {
-            System.out.println("Item wasn't deleted :(");
-        }
-    }
+//    static void testDeletePlsIgnore(DatabaseManager databaseManager) {
+//        HardCopy book = new HardCopy();
+//        book.setItemID(8);
+//        if (databaseManager.deleteItem(book)) {
+//            databaseManager.printItemTable();
+//        } else {
+//            System.out.println("Item wasn't deleted :(");
+//        }
+//    }
 
 }

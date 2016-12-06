@@ -63,8 +63,8 @@ public class DatabaseManager {
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Delete Item failed.");
-            printItemTable();
+            System.out.println("Delete Member failed.");
+            printMemberTable();
             return false;
         }
 
@@ -305,6 +305,10 @@ public class DatabaseManager {
                 member.setMemberId(resultSet.getInt(MEMBER_ID));
                 member.setPassword(resultSet.getString(MEMBER_PASSWORD));
                 main.CUR_USER = member;
+                statement.close();
+                c.commit();
+                c.setAutoCommit(true);
+                c.close();
                 return true;
             }
         } catch (Exception e) {
@@ -393,19 +397,21 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean deleteItem(Item item) {
+    public boolean deleteItem(int itemID) {
         try {
             Connection connection = getDatConnection();
             Statement stmt = connection.createStatement();
-            String sql = "DELETE from " + ITEM_TABLE + " where ID=" + item.getItemID();
+            String sql = "DELETE from " + ITEM_TABLE + " where ID=" + itemID;
             stmt.executeUpdate(sql);
             stmt.close();
             connection.commit();
+            connection.setAutoCommit(true);
             connection.close();
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Delete Item failed.");
-            printItemTable();
+            //printItemTable();
             return false;
         }
 
@@ -553,7 +559,7 @@ public class DatabaseManager {
         return updated;
     }
 
-    public boolean deleteItem(int itemId) {
+    /*public boolean deleteItem(int itemId) {
         try {
             Connection connection = getDatConnection();
             Statement statement = connection.createStatement();
@@ -566,7 +572,7 @@ public class DatabaseManager {
         }
 
         return false;
-    }
+    }*/
 
 
     /**
