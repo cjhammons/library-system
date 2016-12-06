@@ -18,6 +18,12 @@ public class addItem {
     private JTextField itemIDTextField;
     private JComboBox comboBox1;
     private JTextField ADDHERETextField;
+    private JTextField hardCopyTextField;
+
+    public void setVisibilities() {
+        hardCopyTextField.setVisible(false);
+
+    }
 
     public Item createNewItem(){
         comboBox1.insertItemAt("Hard Copy Book", 1);
@@ -31,6 +37,7 @@ public class addItem {
         switch(index) {
             case 1:
                 newItem = new HardCopy();
+                hardCopyTextField.setVisible(true);
                 break;
             case 2:
                 newItem = new EBook();
