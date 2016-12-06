@@ -47,6 +47,17 @@ public class ItemTransaction {
             }
         });
 
+        printItemListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new PrintItemList().getPrintListPanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
 
     }
 
