@@ -1,5 +1,7 @@
 package com.kraken.DataStructures.Items.Books;
 
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
+
 /**
  * Created by Curtis on 11/14/2016.
  */
@@ -10,7 +12,7 @@ public class EBook extends Book {
      * Default constructor
      */
     public EBook() {
-        super();
+        super();this.setType(Type.eBook);
     }
 
     @Override

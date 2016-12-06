@@ -11,6 +11,7 @@ public class addMember {
     private JTextField nameTextField;
     private JComboBox<String> comboBox1;
     private JTextField passwordTextField;
+    private JPanel add_member_panel;
 
     public Member createNewObject() {
         comboBox1.insertItemAt("Librarian", 1);
@@ -25,4 +26,7 @@ public class addMember {
         return newMember;
     };
 
+    public JPanel getAdd_member_panel() {
+        return add_member_panel;
+    }
 }

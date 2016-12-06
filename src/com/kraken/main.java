@@ -9,6 +9,7 @@ import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.ItemTransaction;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -17,6 +18,9 @@ import java.util.List;
  * Driver class with the main method
  */
 public class main {
+
+    public static final Dimension WINDOW_DIMENSION = new Dimension(500,500);
+
     public static void main(String[] args) {
 
         DatabaseManager databaseManager = null;
@@ -35,7 +39,7 @@ public class main {
 //        testAddPlsIgnore(databaseManager);
 //        testDeletePlsIgnore(databaseManager);
 //        getAllTest(databaseManager);
-        testAddMember(databaseManager);
+//        testAddMember(databaseManager);
 //        testUpdateMember(databaseManager);
 //        testCheckout(databaseManager);
 //        testUpdateMember(databaseManager);
@@ -45,7 +49,9 @@ public class main {
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new ItemTransaction().getMain_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,500);
+//        frame.setSize(500,500);
+        frame.setPreferredSize(WINDOW_DIMENSION);
+
         frame.pack();
         frame.setVisible(true);
     }

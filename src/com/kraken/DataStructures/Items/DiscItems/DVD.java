@@ -1,5 +1,7 @@
 package com.kraken.DataStructures.Items.DiscItems;
 
+import com.kraken.DataStructures.Items.Books.Enumerations.Type;
+
 /**
  * Created by Curtis on 11/14/2016.
  */
@@ -13,6 +15,7 @@ public class DVD extends DiscItem{
      */
     public DVD() {
         super();
+        setType(Type.DVD);
     }
 
     @Override
