@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.kraken.main.WINDOW_DIMENSION;
+
 /**
  * Created by Jessica on 12/5/16.
  */
@@ -35,11 +37,23 @@ public class addItem {
     private JTextField directorField;
     private JTextField mainActorField;
     private JButton addButton;
+    private JButton backButton;
 
     Item mItem;
     Type mType;
     public addItem(Type type)
     {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("start screen");
+                frame.setContentPane(new ItemTransaction().getMain_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
         titleField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

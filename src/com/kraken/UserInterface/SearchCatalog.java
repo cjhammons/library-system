@@ -2,6 +2,7 @@ package com.kraken.UserInterface;
 
 import com.kraken.DataStructures.Items.Item;
 import com.kraken.Database.DatabaseManager;
+import com.kraken.main;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import static com.kraken.main.WINDOW_DIMENSION;
+
 /**
  * Created by Curtis on 12/6/2016.
  */
@@ -20,6 +23,7 @@ public class SearchCatalog {
     private JList itemList;
     private JTextArea searchBox;
     private JButton searchButton;
+    private JButton back;
 
 
     public SearchCatalog() {
@@ -35,6 +39,18 @@ public class SearchCatalog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 search();
+            }
+        });
+
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("start screen");
+                frame.setContentPane(new ItemTransaction().getMain_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
             }
         });
     }
