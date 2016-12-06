@@ -7,6 +7,7 @@ import com.kraken.DataStructures.Items.Item;
 import com.kraken.DataStructures.Members.Member;
 import com.kraken.Database.DatabaseManager;
 import com.kraken.UserInterface.ItemTransaction;
+import com.kraken.UserInterface.ValidateMember;
 import com.kraken.UserInterface.WelcomeScreen;
 
 import javax.swing.*;
@@ -49,15 +50,23 @@ public class main {
 //        databaseManager.printMemberTable();
 //        testUpdateItem(databaseManager);
 //        testSearchItem(databaseManager);
-        databaseManager.printMemberTable();
-        testValidate(databaseManager);
-        JFrame frame = new JFrame("start screen");
-        frame.setContentPane(new WelcomeScreen().getWelcome_panel());
+        //databaseManager.printMemberTable();
+        //testValidate(databaseManager);
+        //JFrame frame = new JFrame("start screen");
+        //frame.setContentPane(new WelcomeScreen().getWelcome_panel());
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setPreferredSize(WINDOW_DIMENSION);
+
+        //frame.pack();
+        //frame.setVisible(true);
+
+        JFrame frame = new JFrame("login screen");
+        frame.setContentPane(new ValidateMember().getLogin_panel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(WINDOW_DIMENSION);
-
         frame.pack();
         frame.setVisible(true);
+
     }
 
 
