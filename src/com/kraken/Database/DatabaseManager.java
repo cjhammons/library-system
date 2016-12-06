@@ -76,8 +76,8 @@ public class DatabaseManager {
             Statement stmt = connection.createStatement();
             int checkoutInt = (member.canCheckOut())? 1 : 0;
             int librarianInt = (member.canCheckOut())? 1 : 0;
-            String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian) "
-                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt
+            String sql = "INSERT INTO " + MEMBER_TABLE + " (name,fines,canCheckout,isLibrarian," + MEMBER_PASSWORD + ") "
+                        + "VALUES ('" + member.getName() + "'," + member.getFines() + "," + checkoutInt + "," + librarianInt + "," + MEMBER_PASSWORD
                         + " );";
 
             stmt.executeUpdate(sql);
@@ -104,21 +104,17 @@ public class DatabaseManager {
                             + MEMBER_NAME + " = ? ,"
                             + MEMBER_FINES + " = ? ,"
                             + MEMBER_CANCHECKOUT + " = ? ,"
-                            + MEMBER_ISLIBRARIAN + " = ? "
+                            + MEMBER_ISLIBRARIAN + " = ? ,"
+                            + MEMBER_PASSWORD + " = ? "
                             + "WHERE ID = ?");
             preparedStatement.setString(1, member.getName());
             preparedStatement.setDouble(2, member.getFines());
             preparedStatement.setInt(3, checkoutInt);
             preparedStatement.setInt(4, librarianInt);
             preparedStatement.setInt(5, member.getMemberId());
+//            preparedStatement.setString();
             updated = preparedStatement.execute();
-//            String sql = "UPDATE " + MEMBER_TABLE + " SET "
-//                        + MEMBER_NAME + " = '" + member.getName() + "', "
-//                        + MEMBER_FINES+ " = " + member.getFines() + ", "
-//                        + MEMBER_CANCHECKOUT + " = " + checkoutInt + ", "
-//                        + MEMBER_ISLIBRARIAN + " = " + librarianInt + " "
-//                        + "where ID=" + member.getMemberId();
-//            stmt.executeUpdate(sql);
+
             if (updated) {
                 System.out.println("Update to " + member.getMemberId() + " successful");
             } else {
@@ -142,6 +138,7 @@ public class DatabaseManager {
             Statement statement = c.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
 
+
             while(resultSet.next()) {
                 Member member = new Member();
 
@@ -149,7 +146,7 @@ public class DatabaseManager {
                 member.setFines(resultSet.getDouble(MEMBER_FINES));
                 member.setCanCheckOut(resultSet.getBoolean(MEMBER_CANCHECKOUT));
                 member.setLibrarian(resultSet.getBoolean(MEMBER_ISLIBRARIAN));
-
+                member.setMemberId(resultSet.getInt(MEMBER_ID));
                 list.add(member);
             }
             statement.close();
@@ -167,6 +164,7 @@ public class DatabaseManager {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + MEMBER_TABLE + ";");
+
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("ID");
@@ -348,6 +346,80 @@ public class DatabaseManager {
         return true;
     }
 
+    public boolean updateItem(Item item) {
+        boolean updated = false;
+        try {
+            Connection connection = getDatConnection();
+            Statement stmt = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + ITEM_TABLE + " SET "
+                    + "cost" + " = ? ,"     //1
+                    + "genre" + " = ? ,"    //2
+                    + "title" + " = ? ,"    //3
+                    + "status" + " = ?, "    //4
+                    + "type_" + " = ? ,"     //5
+                    + "author" + " = ?, "    //6
+                    + "isbn" + " = ?, "      //7
+                    + "accessPnt" + " = ?, " //8
+                    + "location" + " = ?, "  //9
+                    + "numDiscs" + " = ?, "  //10
+                    + "runTime" + " = ?, "   //11
+                    + "artist" + " = ?, "    //12
+                    + "director" + " = ?, "  //13
+                    + "mainActor" + " = ? " //14
+                    + "WHERE ID = ?");
+
+            preparedStatement.setInt(1, item.getCost());
+            preparedStatement.setString(2, item.getGenre());
+            preparedStatement.setString(3, item.getTitle());
+            preparedStatement.setString(4, item.getStatus().toString());
+            preparedStatement.setString(5, item.getType().toString());
+
+            if (item instanceof Book) {
+                preparedStatement.setString(6, ((Book) item).getAuthor());
+                preparedStatement.setInt(7, ((Book) item).getISBN());
+            } else if (item instanceof DiscItem){
+                preparedStatement.setInt(10, ((DiscItem) item).getNumDiscs());
+                preparedStatement.setString(11, ((DiscItem) item).getRuntime());
+            }
+            switch (item.getType()) {
+                case HardCopy:
+                    preparedStatement.setString(9, ((HardCopy) item).getLocationInLibrary());
+                    break;
+                case eBook:
+                    preparedStatement.setString(8, ((EBook) item).getAccessPoint());
+                    break;
+                case AudioBook:
+                    preparedStatement.setString(6, ((AudioBook) item).getAuthor());
+                    preparedStatement.setInt(7, ((AudioBook) item).getISBN());
+                    break;
+                case CD:
+                    preparedStatement.setString(12, ((CD) item).getArtist());
+                    break;
+                case DVD:
+                    preparedStatement.setString(13, ((DVD) item).getDirector());
+                    preparedStatement.setString(14, ((DVD) item).getMainActor());
+                    break;
+            }
+
+            updated = preparedStatement.execute();
+
+            if (updated) {
+                System.out.println("Update to " + item.getItemID() + " successful");
+            } else {
+                System.out.println("Update to " + item.getItemID() + " unsuccessful");
+
+            }
+            stmt.close();
+            connection.commit();
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Member update failed : " + e.getMessage());
+        }
+        return updated;
+    }
+
 
     /**
      * Queries the database for All the items and returns them in a neat little list.
@@ -494,7 +566,8 @@ public class DatabaseManager {
                              +  MEMBER_NAME  + "                 TEXT, "
                              +  MEMBER_FINES + "                 DOUBLE PRECISION, "
                              +  MEMBER_CANCHECKOUT + "           INTEGER, "
-                             +  MEMBER_ISLIBRARIAN + "           INTEGER"
+                             +  MEMBER_ISLIBRARIAN + "           INTEGER,"
+                             +  MEMBER_PASSWORD + "              TEXT"
                              + ");"
             );
             stmt.close();
@@ -512,6 +585,9 @@ public class DatabaseManager {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(DATABASE_NAME);
             connection.setAutoCommit(false);
+
+            Statement statement = connection.createStatement();
+//            statement.executeUpdate("DELETE FROM " + ITEM_TABLE);
             return connection;
         } catch (Exception e) {
             System.out.println("Database error: " + e.getClass().getName() + ": " +e.getMessage());
@@ -524,4 +600,5 @@ public class DatabaseManager {
     static final String MEMBER_FINES= "fines";
     static final String MEMBER_CANCHECKOUT = "canCheckout";
     static final String MEMBER_ISLIBRARIAN = "islibrarian";
+    static final String MEMBER_PASSWORD = "password";
 }

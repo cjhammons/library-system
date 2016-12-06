@@ -39,8 +39,9 @@ public class main {
 //        testAddMember(databaseManager);
 //        testUpdateMember(databaseManager);
 //        testCheckout(databaseManager);
-        testUpdateMember(databaseManager);
-        databaseManager.printMemberTable();
+//        testUpdateMember(databaseManager);
+//        databaseManager.printMemberTable();
+        testUpdateItem(databaseManager);
 
         JFrame frame = new JFrame("start screen");
         frame.setContentPane(new StartScreen().getMain_panel());
@@ -55,6 +56,14 @@ public class main {
     *           make sure all these get deleted before submit. //TODO
     *  --------------------------------------------------------------
     */
+
+    static void testUpdateItem(DatabaseManager databaseManager) {
+        List<Item> list = databaseManager.getAllItems();
+        Item item = list.get(0);
+        item.setTitle("THIS TITLE HAS BEEN CHANGED");
+        databaseManager.updateItem(item);
+        databaseManager.printItemTable();
+    }
 
     static void testCheckout(DatabaseManager databaseManager) {
         List<Item> list = databaseManager.getAllItems();
@@ -79,7 +88,7 @@ public class main {
     static void testUpdateMember(DatabaseManager databaseManager) {
         List<Member> list = databaseManager.getAllMembers();
         if (list.size()<1) { return; }
-        Member member = list.get(0);
+        Member member = list.get(1);
         member.setName("THIS NAME HAS BEEN CHANGED");
         boolean updated = databaseManager.updateMember(member);
     }
