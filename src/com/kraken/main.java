@@ -80,9 +80,9 @@ public class main {
         List<Item> list = databaseManager.getAllItems();
         Item item = list.get(0);
         if (item.getStatus() == Status.CheckedOut) {
-            databaseManager.checkIn(item);
+//            databaseManager.checkIn(item);
         } else {
-            databaseManager.checkOut(item);
+//            databaseManager.checkOut(item);
         }
 
     }

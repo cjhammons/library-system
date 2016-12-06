@@ -199,12 +199,35 @@ public class DatabaseManager {
         }
     };
 
+
+
     /*
     * ----------------------------------------------------------------------------------------------------------
     *                                               Item Methods
     * ----------------------------------------------------------------------------------------------------------
     */
 
+    public Status getItemStatus(int itemId) {
+        Status status = null;
+        try {
+            Connection connection = getDatConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE ID = " + itemId + ";";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()){
+                String statusString = resultSet.getString("status");
+                status = Status.valueOf(statusString);
+            }
+        } catch (Exception e){
+            System.out.println("Get status failed: " + e.getMessage());
+        }
+
+
+        return status;
+    }
     public boolean addItem(Item item){
         try {
             Connection connection = getDatConnection();
@@ -272,20 +295,20 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean checkOut(Item item) {
+    public boolean checkOut(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.CheckedOut.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
             c.setAutoCommit(true);
             c.close();
-            System.out.println("Checked out " + item.getTitle());
+            System.out.println("Checked out " + itemId);
 
 
         } catch (Exception e) {
@@ -295,20 +318,20 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean checkIn(Item item) {
+    public boolean checkIn(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.InLibrary.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
             c.setAutoCommit(true);
             c.close();
-            System.out.println("Checked in " + item.getTitle());
+            System.out.println("Checked in " + itemId);
 
         } catch (Exception e) {
             System.out.println("Item Checkin failed: " + e.getMessage());
@@ -317,15 +340,16 @@ public class DatabaseManager {
         return true;
     }
 
-    public boolean renewItem(Item item) {
+    public boolean renewItem(int itemId) {
         try {
             Connection c = getDatConnection();
             Statement statement = c.createStatement();
 
             String sql = "UPDATE " + ITEM_TABLE + " SET "
                     + "status = '" + Status.CheckedOut.toString() + "' "
-                    + "where ID = " + item.getItemID() + ";";
+                    + "where ID = " + itemId + ";";
 
+            System.out.println(itemId + " renewed");
             statement.executeUpdate(sql);
             statement.close();
             c.commit();
@@ -431,6 +455,21 @@ public class DatabaseManager {
             System.out.println("Member update failed : " + e.getMessage());
         }
         return updated;
+    }
+
+    public boolean deleteItem(int itemId) {
+        try {
+            Connection connection = getDatConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "DELETE FROM " + ITEM_TABLE + " WHERE ID=" + itemId +";";
+
+            return statement.execute(sql);
+        } catch (Exception e){
+            System.out.println("delete item failed: "+ e.getMessage());
+        }
+
+        return false;
     }
 
 

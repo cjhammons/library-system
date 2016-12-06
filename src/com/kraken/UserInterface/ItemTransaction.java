@@ -20,6 +20,7 @@ public class ItemTransaction {
     private JButton searchCatalogButton;
     private JButton checkItemStatusButton;
     private JButton printItemListButton;
+    private JButton deleteItemButton;
 
     public ItemTransaction() {
         addItemButton.addActionListener(new ActionListener() {
@@ -28,7 +29,6 @@ public class ItemTransaction {
                 JFrame frame = new JFrame("Select Item Type");
                 frame.setContentPane(new itemSelect().getItem_select_panel());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.setSize(1000,1000);
                 frame.setPreferredSize(main.WINDOW_DIMENSION);
                 frame.pack();
                 frame.setVisible(true);
@@ -59,6 +59,65 @@ public class ItemTransaction {
             }
         });
 
+        checkoutItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new CheckoutItem().getCheckout_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        renewItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new RenewItem().getRenewpanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        checkinItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new CheckInItem().getChedkInPanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        checkItemStatusButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new CheckItemStatus().getItemStatusPanel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        deleteItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Print List");
+                frame.setContentPane(new DeleteItem().getDelete_panel());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(main.WINDOW_DIMENSION);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
     }
 
     public JPanel getMain_panel() {
