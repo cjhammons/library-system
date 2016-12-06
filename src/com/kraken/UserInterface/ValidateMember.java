@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Created by jessiebeark on 12/6/16.
+ * Created by Jessica on 12/6/16.
  */
 public class ValidateMember {
     private JTextField memberIDTextField;
@@ -16,7 +16,7 @@ public class ValidateMember {
     private JTextField inputInvalidPleaseTryTextField;
     public static final Dimension WINDOW_DIMENSION = new Dimension(500,500);
 
-    public void validateMember() {
+    public void validateMemberForm() {
         boolean isValid = false;
         inputInvalidPleaseTryTextField.setVisible(false);
 
