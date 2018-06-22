@@ -1,4 +1,4 @@
-#Library System
+# Library System
 
 This was a semester long group project for my Software Modeling class in college. The purpose of the project was to teach us through experience how to design a system from the ground up using UML and them implementing it. Each member of the group was given a role such as Project Manage and QA analyst. I was given the role of Programmer, which meant that in the end ~95% of the code was written by me. 
 
